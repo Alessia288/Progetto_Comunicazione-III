@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <style>
+        body { margin: 0; background-color: #f7f7f7; }
+        model-viewer { width: 100%; height: 100vh; }
+        .ar-button {
+            background-color: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            padding: 12px 24px;
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <model-viewer 
+        src="poltrona_sacco.glb" 
+        ios-src="POLTRONA_SACCO.usdz"
+        alt="Poltrona Sacco in AR"
+        ar 
+        ar-modes="webxr scene-viewer quick-look" 
+        camera-controls 
+        shadow-intensity="1"
+        auto-rotate>
+        
+        <button slot="ar-button" class="ar-button">
+            🛋️ POSIZIONA NELLA STANZA
+        </button>
+
+    </model-viewer>
+
+</body>
+</html>
