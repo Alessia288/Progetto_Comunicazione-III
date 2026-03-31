@@ -99,14 +99,21 @@
     </div>
 
     <div id="screen-archive" class="screen">
-        <h2>IL TUO ARCHIVIO</h2>
+        <h2 style="margin-top: 20px; color: #333; font-size: 22px;">IL TUO ARCHIVIO</h2>
         <div class="archive-grid">
             <div class="archive-item">
-                <img src="https://i.ibb.co/Lz0m6mY/sacco.png" alt="Sacco">
+                <img src="sacco.png" 
+                     alt="Sacco Catturata" 
+                     style="width: 100%; height: 80px; object-fit: contain; border-radius: 10px;">
                 <p style="font-size: 10px; font-weight: bold; color: var(--primary-red); margin-top:5px;">CATTURATO</p>
             </div>
-            <div class="archive-item" style="opacity: 0.2;"><div style="height:60px; background:#ccc; border-radius:8px;"></div></div>
-            <div class="archive-item" style="opacity: 0.2;"><div style="height:60px; background:#ccc; border-radius:8px;"></div></div>
+            
+            <div class="archive-item" style="opacity: 0.2;">
+                <div style="height:80px; background:#ccc; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#666;">?</div>
+            </div>
+            <div class="archive-item" style="opacity: 0.2;">
+                <div style="height:80px; background:#ccc; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#666;">?</div>
+            </div>
         </div>
         <button class="btn btn-red" onclick="changeScreen('screen-3d')">Torna alla camera</button>
     </div>
