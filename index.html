@@ -55,8 +55,11 @@
 
     <script>
         function showPage(id) {
+            // Nasconde tutte le pagine
             document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            
             const target = document.getElementById(id);
+            // Decide se usare "block" (per le immagini) o "flex" (per il login/splash)
             if(id === 'ar-screen' || id === 'archive' || id === 'detail') {
                 target.style.display = 'block';
             } else {
@@ -64,10 +67,23 @@
             }
         }
 
+        // Funzione per il tasto bianco "Cattura" (se cliccato fuori dall'AR)
         function captureObject() {
-            alert("Ottimo lavoro! Oggetto salvato nella tua collezione.");
+            alert("Complimenti! La Poltrona Sacco è stata aggiunta alla tua collezione.");
             showPage('archive');
         }
+
+        // --- LA PARTE NUOVA ---
+        // Aspetta che l'utente chiuda la fotocamera AR per mandarlo all'archivio
+        const viewer = document.querySelector("model-viewer");
+        
+        viewer.addEventListener('ar-status', (event) => {
+            // Se lo stato dell'AR è "not-presenting" significa che hai appena chiuso la fotocamera
+            if(event.detail.status === 'not-presenting') {
+                setTimeout(() => {
+                    alert("Oggetto catturato con successo! Visualizza l'archivio.");
+                    showPage('archive');
+                }, 500); // Aspetta mezzo secondo per non far scattare l'alert troppo presto
+            }
+        });
     </script>
-</body>
-</html>
