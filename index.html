@@ -9,7 +9,7 @@
         :root { --primary-red: #a51d16; --bg-gray: #f8f8f8; --text-dark: #1a1a1b; }
         body, html { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; overflow: hidden; background-color: white; }
         
-        /* SCHERMATE PRINCIPALI */
+        /* PAGINE */
         .page { display: none; height: 100vh; width: 100%; position: absolute; top: 0; left: 0; }
         #splash { display: flex; flex-direction: column; align-items: center; justify-content: space-around; text-align: center; }
         #login { background-color: var(--primary-red); color: white; padding: 40px 20px; flex-direction: column; align-items: center; text-align: center; }
@@ -18,34 +18,37 @@
 
         model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
 
-        /* POPUP COMPLIMENTI */
+        /* --- IL TUO POPUP PERSONALIZZATO --- */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 9998; /* Altissimo per stare sopra a tutto */
+        }
+
         #popup-success {
             display: none;
             position: fixed;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 80%;
-            max-width: 300px;
+            width: 85%;
+            max-width: 320px;
             background: white;
             padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 25px;
             text-align: center;
-            z-index: 999;
+            z-index: 9999; /* Il livello più alto di tutti */
+            box-shadow: 0 15px 50px rgba(0,0,0,0.5);
         }
 
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 998;
-        }
+        #popup-success h2 { color: var(--primary-red); margin-bottom: 15px; }
+        #popup-success p { color: #333; font-size: 1.1rem; line-height: 1.4; margin-bottom: 25px; }
 
         /* BOTTONI */
         .btn-figma { background-color: var(--primary-red); color: white; border: none; padding: 15px 40px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        .btn-black { background-color: black; color: white; width: 100%; margin-top: 10px; }
         .capture-btn { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: white; border: 2px solid var(--primary-red); border-radius: 50px; padding: 15px 30px; font-weight: bold; z-index: 10; }
-        .btn-open-app { background-color: black; color: white; margin-top: 20px; width: 100%; }
 
         /* NAVBAR E GRID */
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #f9f9f9; display: flex; justify-content: space-around; padding: 15px 0; border-top-left-radius: 30px; border-top-right-radius: 30px; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); z-index: 100; }
@@ -57,20 +60,20 @@
 
     <div id="overlay"></div>
     <div id="popup-success">
-        <h2 style="color: var(--primary-red); margin-top: 0;">Ottimo lavoro!</h2>
-        <p>La poltrona sacco è stata aggiunta alla tua collezione.</p>
-        <button class="btn-figma btn-open-app" onclick="goToCollection()">Apri l'app</button>
+        <h2>Ottimo lavoro! 🛋️</h2>
+        <p>Complimenti! La poltrona sacco è stata aggiunta alla tua collezione.</p>
+        <button class="btn-figma btn-black" onclick="goToCollection()">Apri l'app</button>
     </div>
 
     <div id="splash" class="page" style="display: flex;">
-        <img src="logo.png" style="width: 120px;">
+        <img src="logo.png" style="width: 120px;" alt="Logo">
         <h1>Design Hunt</h1>
         <button class="btn-figma" onclick="show('login')">Inizia</button>
     </div>
 
     <div id="login" class="page">
-        <h2>Bentornato</h2>
-        <div style="background: rgba(255,255,255,0.2); border-radius: 15px; width: 90%; padding: 15px; margin: 10px 0;">eleonora.rossi@example.com</div>
+        <h2 style="margin-top: 60px;">Bentornato</h2>
+        <div style="background: rgba(255,255,255,0.2); border-radius: 15px; width: 80%; padding: 15px; margin: 20px auto; border: 1px solid white;">eleonora.rossi@example.com</div>
         <button class="btn-figma" style="background: black; margin-top: 20px;" onclick="show('ar-screen')">Prossimo ></button>
     </div>
 
@@ -84,66 +87,64 @@
         <h2>LA TUA COLLEZIONE</h2>
         <div class="grid">
             <div>
-                <img src="https://i.ibb.co/Lz0m6mY/sacco.png">
+                <img src="https://i.ibb.co/Lz0m6mY/sacco.png" alt="Sacco">
                 <p style="font-size: 10px; font-weight: bold; color: green;">CATTURATO</p>
             </div>
             <img src="https://via.placeholder.com/100?text=?">
             <img src="https://via.placeholder.com/100?text=?">
         </div>
         <div class="nav-bar">
-            <div onclick="show('ar-screen')" style="cursor:pointer">🏠</div>
-            <div style="color: var(--primary-red)">📁</div>
-            <div>👤</div>
+            <div onclick="show('ar-screen')" style="cursor:pointer; font-size: 24px;">🏠</div>
+            <div style="color: var(--primary-red); font-size: 24px;">📁</div>
+            <div style="font-size: 24px;">👤</div>
         </div>
     </div>
 
     <script>
-    let isArActive = false;
+        let isArActive = false;
 
-    function show(id) {
-        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-        const target = document.getElementById(id);
-        if (id === 'ar-screen' || id === 'collection') {
-            target.style.display = 'block';
-        } else {
-            target.style.display = 'flex';
+        function show(id) {
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            const target = document.getElementById(id);
+            target.style.display = (id === 'login' || id === 'splash') ? 'flex' : 'block';
         }
-    }
 
-    const modelViewer = document.querySelector('#viewer');
-    const popup = document.getElementById('popup-success');
-    const overlay = document.getElementById('overlay');
+        const modelViewer = document.querySelector('#viewer');
+        const popup = document.getElementById('popup-success');
+        const overlay = document.getElementById('overlay');
 
-    // 1. Rileva quando clicchi per entrare in AR su iPhone
-    modelViewer.addEventListener('quick-look-button-tapped', () => {
-        isArActive = true; 
-        console.log("iOS Quick Look avviato");
-    });
+        // Monitoraggio per iPhone (iOS Quick Look)
+        modelViewer.addEventListener('ar-status', (event) => {
+            if (event.detail.status === 'session-started') {
+                isArActive = true; 
+            }
+        });
 
-    // 2. Il "Trucco del Ritorno" per iPhone
-    // Su iOS, quando chiudi l'AR, la pagina torna "visibile". 
-    // Usiamo questo evento perché è l'unico che iPhone lancia sempre.
-    document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === 'visible' && isArActive) {
-            // Aspettiamo un secondo che l'animazione di chiusura di iOS finisca
-            setTimeout(() => {
-                triggerSuccess();
-            }, 800);
-        }
-    });
+        // Questo evento scatta quando torni a Safari dopo aver chiuso l'AR su iPhone
+        window.addEventListener('pageshow', () => {
+            if (isArActive) {
+                setTimeout(triggerSuccess, 800);
+            }
+        });
 
-    function triggerSuccess() {
-        if (isArActive) {
+        // Backup per iPhone: scatta quando la pagina torna visibile
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === 'visible' && isArActive) {
+                setTimeout(triggerSuccess, 800);
+            }
+        });
+
+        function triggerSuccess() {
             overlay.style.display = 'block';
             popup.style.display = 'block';
-            // IMPORTANTE: resettiamo a false così il messaggio non appare all'infinito
-            isArActive = false; 
+            isArActive = false; // Reset per non farlo riapparire a caso
         }
-    }
 
-    function goToCollection() {
-        overlay.style.display = 'none';
-        popup.style.display = 'none';
-        show('collection');
-    }
-</script>
+        function goToCollection() {
+            overlay.style.display = 'none';
+            popup.style.display = 'none';
+            show('collection');
+        }
+    </script>
+</body>
+</html>
