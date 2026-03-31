@@ -7,125 +7,124 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         :root { --primary-red: #a51d16; --bg-gray: #f8f8f8; --text-dark: #1a1a1b; }
-        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; background-color: white; }
+        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; overflow: hidden; background-color: white; }
         
-        /* SCHERMATE */
-        #splash { display: flex; flex-direction: column; align-items: center; justify-content: space-around; height: 100vh; text-align: center; }
-        #login { display: none; background-color: var(--primary-red); height: 100vh; color: white; padding: 40px 20px; flex-direction: column; align-items: center; text-align: center; }
-        
-        /* FIX PROBLEMA 2: SFONDO AR */
-        /* Abbiamo rimosso il background-color grigio che copriva la camera */
-        #ar-screen { display: none; height: 100vh; width: 100%; position: relative; background: transparent; }
+        /* SCHERMATE PRINCIPALI */
+        .page { display: none; height: 100vh; width: 100%; position: absolute; top: 0; left: 0; }
+        #splash { display: flex; flex-direction: column; align-items: center; justify-content: space-around; text-align: center; }
+        #login { background-color: var(--primary-red); color: white; padding: 40px 20px; flex-direction: column; align-items: center; text-align: center; }
+        #ar-screen { background: transparent; }
+        #collection { background: white; overflow-y: auto; text-align: center; padding: 20px; padding-bottom: 80px; }
+
         model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
 
-        .capture-btn { 
-            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); 
-            background: white; border: 2px solid var(--primary-red); border-radius: 50px; 
-            padding: 15px 30px; font-weight: bold; z-index: 20; cursor: pointer; 
+        /* POPUP COMPLIMENTI */
+        #popup-success {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 300px;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            z-index: 999;
         }
 
-        #collection { display: none; background: white; min-height: 100vh; padding: 20px; text-align: center; }
-        .stats { color: var(--primary-red); font-size: 0.8rem; margin: 10px 0; }
-        .tabs { display: flex; border-bottom: 2px solid #eee; margin-bottom: 20px; }
-        .tab { flex: 1; padding: 10px; font-weight: bold; color: #666; }
-        .tab.active { color: black; border-bottom: 3px solid var(--primary-red); }
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+        }
+
+        /* BOTTONI */
+        .btn-figma { background-color: var(--primary-red); color: white; border: none; padding: 15px 40px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        .capture-btn { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: white; border: 2px solid var(--primary-red); border-radius: 50px; padding: 15px 30px; font-weight: bold; z-index: 10; }
+        .btn-open-app { background-color: black; color: white; margin-top: 20px; width: 100%; }
+
+        /* NAVBAR E GRID */
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #f9f9f9; display: flex; justify-content: space-around; padding: 15px 0; border-top-left-radius: 30px; border-top-right-radius: 30px; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); z-index: 100; }
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .grid img { width: 100%; border-radius: 10px; }
-
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #f9f9f9; display: flex; justify-content: space-around; padding: 15px 0; border-top-left-radius: 30px; border-top-right-radius: 30px; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
-        .nav-item { font-size: 24px; color: #333; cursor: pointer; }
-        .nav-item.active { color: var(--primary-red); }
-
-        .btn-figma { background-color: var(--primary-red); color: white; border: none; padding: 18px 80px; border-radius: 50px; font-size: 1.1rem; font-weight: bold; cursor: pointer; }
-        .btn-black { background-color: black; width: 100%; max-width: 350px; margin-top: 40px; }
     </style>
 </head>
 <body>
 
-    <div id="splash">
-        <img src="logo.png" style="width: 150px;" alt="Logo">
+    <div id="overlay"></div>
+    <div id="popup-success">
+        <h2 style="color: var(--primary-red); margin-top: 0;">Ottimo lavoro!</h2>
+        <p>La poltrona sacco è stata aggiunta alla tua collezione.</p>
+        <button class="btn-figma btn-open-app" onclick="goToCollection()">Apri l'app</button>
+    </div>
+
+    <div id="splash" class="page" style="display: flex;">
+        <img src="logo.png" style="width: 120px;">
         <h1>Design Hunt</h1>
         <button class="btn-figma" onclick="show('login')">Inizia</button>
     </div>
 
-    <div id="login">
+    <div id="login" class="page">
         <h2>Bentornato</h2>
-        <p>accedi al tuo account</p>
-        <div style="background: rgba(255,255,255,0.2); border-radius: 15px; width: 100%; max-width: 350px; padding: 15px; margin: 10px 0;">eleonora.rossi@example.com</div>
-        <div style="background: rgba(255,255,255,0.2); border-radius: 15px; width: 100%; max-width: 350px; padding: 15px; margin: 10px 0;">••••••••••••••••</div>
-        <button class="btn-figma btn-black" onclick="show('ar-screen')">Prossimo ></button>
+        <div style="background: rgba(255,255,255,0.2); border-radius: 15px; width: 90%; padding: 15px; margin: 10px 0;">eleonora.rossi@example.com</div>
+        <button class="btn-figma" style="background: black; margin-top: 20px;" onclick="show('ar-screen')">Prossimo ></button>
     </div>
 
-    <div id="ar-screen">
-        <model-viewer 
-            id="viewer"
-            src="poltrona_sacco.glb" 
-            ios-src="POLTRONA_SACCO.usdz" 
-            ar 
-            ar-modes="webxr scene-viewer quick-look" 
-            camera-controls 
-            shadow-intensity="1">
-            
-            <button slot="ar-button" class="capture-btn" id="captureBtn">🛋️ ENTRA IN AR</button>
+    <div id="ar-screen" class="page">
+        <model-viewer id="viewer" src="poltrona_sacco.glb" ios-src="POLTRONA_SACCO.usdz" ar ar-modes="webxr scene-viewer quick-look" camera-controls shadow-intensity="1">
+            <button slot="ar-button" class="capture-btn">🛋️ POSIZIONA E CATTURA</button>
         </model-viewer>
     </div>
 
-    <div id="collection">
+    <div id="collection" class="page">
         <h2>LA TUA COLLEZIONE</h2>
-        <p style="font-size: 0.9rem;">Dalle strade di Calenzano al tuo smartphone...</p>
-        <div class="stats">Totale Oggetti Catturati: 47<br>Punti Design: 12.500</div>
-        
-        <div class="tabs">
-            <div class="tab active">3D</div>
-            <div class="tab">About</div>
-            <div class="tab">Status</div>
-        </div>
-
-        <div class="grid" id="itemsGrid">
-            <div onclick="alert('Poltrona Sacco: Zanotta, 1968')">
-                <img src="https://i.ibb.co/Lz0m6mY/sacco.png" alt="Sacco">
-                <p style="font-size: 10px; font-weight: bold; color: green;">CATTURATO OGGI</p>
+        <div class="grid">
+            <div>
+                <img src="https://i.ibb.co/Lz0m6mY/sacco.png">
+                <p style="font-size: 10px; font-weight: bold; color: green;">CATTURATO</p>
             </div>
-            <img src="https://via.placeholder.com/100?text=?" style="opacity: 0.3;">
-            <img src="https://via.placeholder.com/100?text=?" style="opacity: 0.3;">
+            <img src="https://via.placeholder.com/100?text=?">
+            <img src="https://via.placeholder.com/100?text=?">
         </div>
-
         <div class="nav-bar">
-            <div class="nav-item" onclick="show('ar-screen')">🏠</div>
-            <div class="nav-item active">📁</div>
-            <div class="nav-item">👤</div>
+            <div onclick="show('ar-screen')" style="cursor:pointer">🏠</div>
+            <div style="color: var(--primary-red)">📁</div>
+            <div>👤</div>
         </div>
     </div>
 
     <script>
         function show(id) {
-            // Nascondi tutto
-            document.getElementById('splash').style.display = 'none';
-            document.getElementById('login').style.display = 'none';
-            document.getElementById('ar-screen').style.display = 'none';
-            document.getElementById('collection').style.display = 'none';
-            
-            // Mostra solo la sezione richiesta
-            const el = document.getElementById(id);
-            if (id === 'ar-screen' || id === 'collection') {
-                el.style.display = 'block';
-            } else {
-                el.style.display = 'flex';
-            }
+            // Nasconde tutte le pagine
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            // Mostra quella selezionata
+            const target = document.getElementById(id);
+            target.style.display = (id === 'login' || id === 'splash') ? 'flex' : 'block';
         }
 
-        // FIX PROBLEMA 1: Gestione corretta dell'evento AR
         const modelViewer = document.querySelector('#viewer');
-        
-        // Invece di mostrare l'alert subito, aspettiamo che l'utente ESCA dall'AR
+        const popup = document.getElementById('popup-success');
+        const overlay = document.getElementById('overlay');
+
+        // RILEVA QUANDO L'UTENTE TORNA DALL'AR
         modelViewer.addEventListener('ar-status', (event) => {
             if (event.detail.status === 'not-presenting') {
-                // Questo accade quando l'utente chiude la fotocamera AR
-                alert("Complimenti! La Poltrona Sacco è stata salvata nell'archivio.");
-                show('collection');
+                // L'utente ha chiuso la fotocamera AR (ha scattato o è uscito)
+                overlay.style.display = 'block';
+                popup.style.display = 'block';
             }
         });
 
+        function goToCollection() {
+            // Nasconde il popup e va all'archivio
+            overlay.style.display = 'none';
+            popup.style.display = 'none';
+            show('collection');
+        }
     </script>
 </body>
 </html>
