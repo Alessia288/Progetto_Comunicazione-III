@@ -6,86 +6,73 @@
     <title>Design Hunt AR</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        :root { --primary-red: #a51d16; --bg-gray: #f2f2f2; }
-        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; background-color: white; }
-        
-        /* SCHERMATA 1: SPLASH SCREEN */
-        #splash { display: flex; flex-direction: column; align-items: center; justify-content: space-around; height: 100vh; text-align: center; }
-        #splash h1 { color: #1a1a1b; font-size: 2.5rem; margin-top: -20px; }
-        .logo-placeholder { width: 150px; height: 150px; background: var(--primary-red); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 5rem; font-weight: bold; }
-        
-        /* SCHERMATA 2: LOGIN */
-        #login { display: none; background-color: var(--primary-red); height: 100vh; color: white; padding: 40px 20px; box-sizing: border-box; flex-direction: column; align-items: center; }
-        #login h2 { font-size: 3rem; margin-bottom: 5px; }
-        .input-group { background: rgba(255,255,255,0.2); border-radius: 15px; width: 100%; max-width: 400px; padding: 15px; margin: 10px 0; border: 1px solid rgba(255,255,255,0.3); color: white; }
-        
-        /* PULSANTI STILE FIGMA */
-        .btn-figma { background-color: var(--primary-red); color: white; border: none; padding: 18px 80px; border-radius: 50px; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-black { background-color: black; width: 100%; max-width: 400px; margin-top: auto; margin-bottom: 40px; }
+        :root { --primary-red: #a51d16; }
+        body, html { margin: 0; padding: 0; font-family: sans-serif; overflow: hidden; background-color: white; }
+        .page { display: none; width: 100vw; height: 100vh; position: relative; }
+        img.fullscreen { width: 100%; height: 100%; object-fit: contain; }
 
-        /* SCHERMATA 3: AR */
-        #ar-screen { display: none; height: 100vh; width: 100%; position: relative; }
-        model-viewer { width: 100%; height: 100%; background-color: var(--bg-gray); }
-        .capture-btn { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: white; border: 2px solid var(--primary-red); border-radius: 50px; padding: 15px 30px; font-weight: bold; display: flex; align-items: center; gap: 10px; z-index: 10; }
+        /* SPLASH SCREEN */
+        #splash { display: flex; flex-direction: column; align-items: center; justify-content: space-around; text-align: center; }
+        .btn-figma { background-color: var(--primary-red); color: white; border: none; padding: 18px 80px; border-radius: 50px; font-size: 1.2rem; font-weight: bold; cursor: pointer; }
+
+        /* LOGIN SCREEN (USA IL TUO SFONDO ROSSO SE VUOI, O IL CODICE) */
+        #login { background-color: var(--primary-red); color: white; flex-direction: column; align-items: center; justify-content: center; }
+        .input-sim { background: rgba(255,255,255,0.2); border-radius: 15px; width: 80%; padding: 15px; margin: 10px 0; border: 1px solid rgba(255,255,255,0.3); }
+
+        /* AR SCREEN */
+        #ar-screen { height: 100vh; }
+        model-viewer { width: 100%; height: 100%; }
+        .capture-btn { position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); background: white; border: 2px solid var(--primary-red); border-radius: 50px; padding: 15px 30px; font-weight: bold; z-index: 10; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="splash">
-        <div>
-            <img src="logo.png" alt="Logo Design Hunt" style="width: 150px; margin-bottom: 20px;">
-            <h1>Design Hunt</h1>
-        </div>
-        <button class="btn-figma" onclick="goToLogin()">Inizia</button>
+    <div id="splash" class="page" style="display: flex;">
+        <img src="logo.png" style="width: 150px;">
+        <h1>Design Hunt</h1>
+        <button class="btn-figma" onclick="showPage('login')">Inizia</button>
     </div>
 
-    <div id="login">
-        <div style="align-self: flex-end; font-size: 0.9rem;">ITA 🌐</div>
+    <div id="login" class="page">
         <h2>Bentornato</h2>
-        <p>accedi al tuo account</p>
-        
-        <div class="input-group">eleonora.rossi@exemole.com</div>
-        <div class="input-group">••••••••••••••••</div>
-        
-        <div style="width: 100%; max-width: 400px; display: flex; justify-content: space-between; font-size: 0.8rem; margin-top: 10px;">
-            <label><input type="checkbox" checked> Ricordami</label>
-            <span>Password dimenticata?</span>
-        </div>
-
-        <button class="btn-figma btn-black" onclick="goToAR()">Prossimo &nbsp; ></button>
-        <p style="font-size: 0.9rem;">Nuovo account? <strong>Registrati Ora</strong></p>
+        <div class="input-sim">eleonora.rossi@example.com</div>
+        <div class="input-sim">••••••••••••••••</div>
+        <button class="btn-figma" style="background: black; margin-top: 50px;" onclick="showPage('ar-screen')">Prossimo ></button>
     </div>
 
-    <div id="ar-screen">
-        <model-viewer 
-            src="poltrona_sacco.glb" 
-            ios-src="POLTRONA_SACCO.usdz"
-            ar ar-modes="webxr scene-viewer quick-look" 
-            camera-controls shadow-intensity="1" auto-rotate>
-            
-            <button slot="ar-button" class="capture-btn">
-                🛋️ POSIZIONA E CATTURA
-            </button>
+    <div id="ar-screen" class="page">
+        <model-viewer src="poltrona_sacco.glb" ios-src="POLTRONA_SACCO.usdz" ar ar-modes="webxr scene-viewer quick-look" camera-controls shadow-intensity="1">
+            <button slot="ar-button" class="capture-btn" onclick="captureObject()">🛋️ POSIZIONA E CATTURA</button>
         </model-viewer>
     </div>
 
+    <div id="archive" class="page">
+        <img src="archivio.png" class="fullscreen">
+        <div onclick="showPage('detail')" style="position:absolute; top:58%; left:5%; width:30%; height:20%; cursor:pointer;"></div>
+    </div>
+
+    <div id="detail" class="page">
+        <img src="scheda.png" class="fullscreen">
+        <div onclick="showPage('archive')" style="position:absolute; bottom:0; left:40%; width:20%; height:10%; cursor:pointer;"></div>
+    </div>
+
     <script>
-        function goToLogin() {
-            document.getElementById('splash').style.display = 'none';
-            document.getElementById('login').style.display = 'flex';
+        function showPage(id) {
+            // Nasconde tutte le pagine
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            // Mostra quella selezionata
+            const target = document.getElementById(id);
+            if(id === 'ar-screen' || id === 'archive' || id === 'detail') {
+                target.style.display = 'block';
+            } else {
+                target.style.display = 'flex';
+            }
         }
 
-        function goToAR() {
-            document.getElementById('login').style.display = 'none';
-            document.getElementById('ar-screen').style.display = 'block';
+        function captureObject() {
+            alert("Ottimo lavoro! Oggetto salvato nella tua collezione.");
+            showPage('archive');
         }
-        
-        // Simula la cattura nell'archivio
-        document.querySelector('.capture-btn').addEventListener('click', () => {
-            setTimeout(() => {
-                alert("Oggetto catturato! La Poltrona Sacco è stata salvata nel tuo archivio Design Hunt.");
-            }, 2000);
-        });
     </script>
 </body>
 </html>
