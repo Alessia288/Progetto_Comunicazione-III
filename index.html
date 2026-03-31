@@ -98,33 +98,52 @@
     </div>
 
     <script>
-        function show(id) {
-            // Nasconde tutte le pagine
-            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-            // Mostra quella selezionata
-            const target = document.getElementById(id);
-            target.style.display = (id === 'login' || id === 'splash') ? 'flex' : 'block';
+    let isArActive = false;
+
+    function show(id) {
+        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+        const target = document.getElementById(id);
+        if (id === 'ar-screen' || id === 'collection') {
+            target.style.display = 'block';
+        } else {
+            target.style.display = 'flex';
         }
+    }
 
-        const modelViewer = document.querySelector('#viewer');
-        const popup = document.getElementById('popup-success');
-        const overlay = document.getElementById('overlay');
+    const modelViewer = document.querySelector('#viewer');
+    const popup = document.getElementById('popup-success');
+    const overlay = document.getElementById('overlay');
 
-        // RILEVA QUANDO L'UTENTE TORNA DALL'AR
-        modelViewer.addEventListener('ar-status', (event) => {
-            if (event.detail.status === 'not-presenting') {
-                // L'utente ha chiuso la fotocamera AR (ha scattato o è uscito)
-                overlay.style.display = 'block';
-                popup.style.display = 'block';
-            }
-        });
+    // 1. Rileva quando clicchi per entrare in AR su iPhone
+    modelViewer.addEventListener('quick-look-button-tapped', () => {
+        isArActive = true; 
+        console.log("iOS Quick Look avviato");
+    });
 
-        function goToCollection() {
-            // Nasconde il popup e va all'archivio
-            overlay.style.display = 'none';
-            popup.style.display = 'none';
-            show('collection');
+    // 2. Il "Trucco del Ritorno" per iPhone
+    // Su iOS, quando chiudi l'AR, la pagina torna "visibile". 
+    // Usiamo questo evento perché è l'unico che iPhone lancia sempre.
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === 'visible' && isArActive) {
+            // Aspettiamo un secondo che l'animazione di chiusura di iOS finisca
+            setTimeout(() => {
+                triggerSuccess();
+            }, 800);
         }
-    </script>
-</body>
-</html>
+    });
+
+    function triggerSuccess() {
+        if (isArActive) {
+            overlay.style.display = 'block';
+            popup.style.display = 'block';
+            // IMPORTANTE: resettiamo a false così il messaggio non appare all'infinito
+            isArActive = false; 
+        }
+    }
+
+    function goToCollection() {
+        overlay.style.display = 'none';
+        popup.style.display = 'none';
+        show('collection');
+    }
+</script>
