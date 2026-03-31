@@ -7,19 +7,34 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         :root { --primary-red: #a51d16; }
-        body, html { margin: 0; padding: 0; font-family: sans-serif; overflow: hidden; background-color: white; }
-        .page { display: none; width: 100vw; height: 100vh; position: relative; }
+        body, html { margin: 0; padding: 0; font-family: sans-serif; background-color: white; width: 100%; height: 100%; overflow: hidden; }
+        
+        /* Tutte le pagine sono nascoste di default e occupano tutto lo schermo */
+        .page { 
+            display: none; 
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            background: white;
+            z-index: 10;
+        }
+
         img.fullscreen { width: 100%; height: 100%; object-fit: contain; }
 
+        /* SPLASH & LOGIN */
         #splash { display: flex; flex-direction: column; align-items: center; justify-content: space-around; text-align: center; }
+        #login { background-color: var(--primary-red); color: white; flex-direction: column; align-items: center; justify-content: center; z-index: 20; }
         .btn-figma { background-color: var(--primary-red); color: white; border: none; padding: 18px 80px; border-radius: 50px; font-size: 1.2rem; font-weight: bold; cursor: pointer; }
-
-        #login { background-color: var(--primary-red); color: white; flex-direction: column; align-items: center; justify-content: center; }
         .input-sim { background: rgba(255,255,255,0.2); border-radius: 15px; width: 80%; padding: 15px; margin: 10px 0; border: 1px solid rgba(255,255,255,0.3); }
 
-        #ar-screen { height: 100vh; }
-        model-viewer { width: 100%; height: 100%; }
-        .capture-btn { position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); background: white; border: 2px solid var(--primary-red); border-radius: 50px; padding: 15px 30px; font-weight: bold; z-index: 10; cursor: pointer; }
+        /* AR SCREEN: Il model-viewer deve stare sopra tutto quando attivo */
+        #ar-screen { z-index: 30; background: #eee; }
+        model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
+
+        /* SCHERMATA ARCHIVIO & DETTAGLIO */
+        #archive { z-index: 40; }
+        #detail { z-index: 50; }
     </style>
 </head>
 <body>
@@ -38,52 +53,55 @@
     </div>
 
     <div id="ar-screen" class="page">
-        <model-viewer src="poltrona_sacco.glb" ios-src="POLTRONA_SACCO.usdz" ar ar-modes="webxr scene-viewer quick-look" camera-controls shadow-intensity="1">
-            <button slot="ar-button" class="capture-btn" onclick="captureObject()">🛋️ POSIZIONA E CATTURA</button>
-        </model-viewer>
+        <model-viewer 
+            src="poltrona_sacco.glb" 
+            ios-src="POLTRONA_SACCO.usdz" 
+            ar 
+            ar-modes="webxr scene-viewer quick-look" 
+            camera-controls 
+            shadow-intensity="1">
+            </model-viewer>
     </div>
 
     <div id="archive" class="page">
         <img src="archivio_sfondo.png" class="fullscreen">
-        <div onclick="showPage('detail')" style="position:absolute; top:58%; left:5%; width:30%; height:20%; cursor:pointer;"></div>
+        <div onclick="showPage('detail')" style="position:absolute; top:58%; left:5%; width:30%; height:20%;"></div>
     </div>
 
     <div id="detail" class="page">
         <img src="scheda_sacco.png" class="fullscreen">
-        <div onclick="showPage('archive')" style="position:absolute; bottom:0; left:40%; width:20%; height:10%; cursor:pointer;"></div>
+        <div onclick="showPage('archive')" style="position:absolute; bottom:0; left:40%; width:20%; height:10%;"></div>
     </div>
 
     <script>
         function showPage(id) {
-            // Nasconde tutte le pagine
-            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            // Nascondiamo TUTTO
+            document.querySelectorAll('.page').forEach(p => {
+                p.style.display = 'none';
+            });
             
+            // Mostriamo solo la pagina scelta
             const target = document.getElementById(id);
-            // Decide se usare "block" (per le immagini) o "flex" (per il login/splash)
-            if(id === 'ar-screen' || id === 'archive' || id === 'detail') {
-                target.style.display = 'block';
-            } else {
+            if (id === 'splash' || id === 'login') {
                 target.style.display = 'flex';
+            } else {
+                target.style.display = 'block';
             }
         }
 
-        // Funzione per il tasto bianco "Cattura" (se cliccato fuori dall'AR)
-        function captureObject() {
-            alert("Complimenti! La Poltrona Sacco è stata aggiunta alla tua collezione.");
-            showPage('archive');
-        }
+        // GESTIONE AR
+        const modelViewer = document.querySelector("model-viewer");
 
-        // --- LA PARTE NUOVA ---
-        // Aspetta che l'utente chiuda la fotocamera AR per mandarlo all'archivio
-        const viewer = document.querySelector("model-viewer");
-        
-        viewer.addEventListener('ar-status', (event) => {
-            // Se lo stato dell'AR è "not-presenting" significa che hai appena chiuso la fotocamera
+        modelViewer.addEventListener('ar-status', (event) => {
+            // Quando l'utente ESCE dall'AR (clicca la X)
             if(event.detail.status === 'not-presenting') {
+                // Aspettiamo un attimo che il visore si chiuda
                 setTimeout(() => {
-                    alert("Oggetto catturato con successo! Visualizza l'archivio.");
+                    alert("Complimenti! La Poltrona Sacco è stata aggiunta alla tua collezione.");
                     showPage('archive');
-                }, 500); // Aspetta mezzo secondo per non far scattare l'alert troppo presto
+                }, 500);
             }
         });
     </script>
+</body>
+</html>
