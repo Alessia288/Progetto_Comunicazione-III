@@ -2,148 +2,146 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Design Hunt AR</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    
     <style>
-        :root { --primary-red: #a51d16; --bg-gray: #f8f8f8; --text-dark: #1a1a1b; }
-        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; overflow: hidden; background-color: white; }
-        
-        /* PAGINE */
-        .page { display: none; height: 100vh; width: 100%; position: absolute; top: 0; left: 0; }
-        #splash { display: flex; flex-direction: column; align-items: center; justify-content: space-around; text-align: center; }
-        #login { background-color: var(--primary-red); color: white; padding: 40px 20px; flex-direction: column; align-items: center; text-align: center; }
-        #ar-screen { background: transparent; }
-        #collection { background: white; overflow-y: auto; text-align: center; padding: 20px; padding-bottom: 80px; }
+        :root { --primary-red: #a51d16; --bg-gray: #f8f8f8; }
+        body, html { margin: 0; padding: 0; font-family: -apple-system, sans-serif; height: 100%; overflow: hidden; background: white; }
 
-        model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
+        /* GESTIONE SCHERMATE */
+        .screen { display: none; height: 100vh; width: 100vw; position: absolute; top: 0; left: 0; align-items: center; justify-content: center; text-align: center; }
+        .active { display: flex; flex-direction: column; }
 
-        /* --- IL TUO POPUP PERSONALIZZATO --- */
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 9998; /* Altissimo per stare sopra a tutto */
+        /* 1. SPLASH SCREEN (La primissima che vedi) */
+        #screen-splash { background-color: white; z-index: 10000; }
+        .splash-logo { width: 120px; margin-bottom: 20px; }
+        #screen-splash h1 { font-size: 36px; color: var(--primary-red); letter-spacing: -1px; margin: 0; }
+
+        /* 2. LOGIN */
+        #screen-login { background-color: var(--primary-red); color: white; padding: 20px; }
+        .input-box { background: rgba(255,255,255,0.2); border: 1px solid white; border-radius: 12px; width: 80%; padding: 15px; margin: 10px 0; color: white; text-align: left; font-size: 14px; max-width: 300px; }
+
+        /* 3. SCHERMATA OGGETTO 3D */
+        #screen-3d { background: white; justify-content: flex-start; }
+        .header-3d { display: flex; align-items: center; padding: 15px 20px; width: 100%; box-sizing: border-box; }
+        .app-logo { width: 40px; margin-right: 15px; }
+        model-viewer { width: 100%; height: 70%; background-color: #ffffff; }
+
+        /* 4. ARCHIVIO */
+        #screen-archive { background: var(--bg-gray); justify-content: flex-start; padding-top: 40px; }
+        .archive-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 20px; width: 90%; }
+        .archive-item { background: white; border-radius: 15px; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
+        .archive-item img { width: 100%; border-radius: 10px; }
+
+        /* BOTTONI STILE DESIGN */
+        .btn { border: none; border-radius: 50px; padding: 16px 40px; font-weight: 600; font-size: 16px; cursor: pointer; transition: 0.3s; width: 80%; max-width: 300px; }
+        .btn-white { background: white; color: var(--primary-red); margin-top: 20px; }
+        .btn-red { background: var(--primary-red); color: white; margin-top: 20px; }
+        .btn-black { background: black; color: white; width: 100%; margin-top: 15px; }
+
+        /* POPUP IPHONE (iOS Quick Look ready) */
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 9998; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+        #iphone-popup { 
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 80%; max-width: 300px; background: rgba(255,255,255,0.95); 
+            border-radius: 20px; padding: 25px; text-align: center; z-index: 9999;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
-
-        #popup-success {
-            display: none;
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 85%;
-            max-width: 320px;
-            background: white;
-            padding: 30px;
-            border-radius: 25px;
-            text-align: center;
-            z-index: 9999; /* Il livello più alto di tutti */
-            box-shadow: 0 15px 50px rgba(0,0,0,0.5);
-        }
-
-        #popup-success h2 { color: var(--primary-red); margin-bottom: 15px; }
-        #popup-success p { color: #333; font-size: 1.1rem; line-height: 1.4; margin-bottom: 25px; }
-
-        /* BOTTONI */
-        .btn-figma { background-color: var(--primary-red); color: white; border: none; padding: 15px 40px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1rem; }
-        .btn-black { background-color: black; color: white; width: 100%; margin-top: 10px; }
-        .capture-btn { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: white; border: 2px solid var(--primary-red); border-radius: 50px; padding: 15px 30px; font-weight: bold; z-index: 10; }
-
-        /* NAVBAR E GRID */
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #f9f9f9; display: flex; justify-content: space-around; padding: 15px 0; border-top-left-radius: 30px; border-top-right-radius: 30px; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); z-index: 100; }
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
-        .grid img { width: 100%; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="overlay"></div>
-    <div id="popup-success">
-        <h2>Ottimo lavoro! 🛋️</h2>
-        <p>Complimenti! La poltrona sacco è stata aggiunta alla tua collezione.</p>
-        <button class="btn-figma btn-black" onclick="goToCollection()">Apri l'app</button>
-    </div>
-
-    <div id="splash" class="page" style="display: flex;">
-        <img src="logo.png" style="width: 120px;" alt="Logo">
+    <div id="screen-splash" class="screen active">
+        <img src="logo.png" alt="Design Hunt Logo" class="splash-logo">
         <h1>Design Hunt</h1>
-        <button class="btn-figma" onclick="show('login')">Inizia</button>
     </div>
 
-    <div id="login" class="page">
-        <h2 style="margin-top: 60px;">Bentornato</h2>
-        <div style="background: rgba(255,255,255,0.2); border-radius: 15px; width: 80%; padding: 15px; margin: 20px auto; border: 1px solid white;">eleonora.rossi@example.com</div>
-        <button class="btn-figma" style="background: black; margin-top: 20px;" onclick="show('ar-screen')">Prossimo ></button>
+    <div id="screen-login" class="screen">
+        <h1 style="font-size: 32px; margin-bottom: 20px;">Bentornato</h1>
+        <p>Accedi al tuo account</p>
+        <div class="input-box">eleonora.rossi@example.com</div>
+        <div class="input-box">••••••••••••••••</div>
+        <button class="btn btn-white" onclick="changeScreen('screen-3d')">Accedi</button>
     </div>
 
-    <div id="ar-screen" class="page">
-        <model-viewer id="viewer" src="poltrona_sacco.glb" ios-src="POLTRONA_SACCO.usdz" ar ar-modes="webxr scene-viewer quick-look" camera-controls shadow-intensity="1">
-            <button slot="ar-button" class="capture-btn">🛋️ POSIZIONA E CATTURA</button>
+    <div id="screen-3d" class="screen">
+        <div class="header-3d">
+            <img src="logo.png" alt="Logo Icona" class="app-logo">
+            <div style="text-align: left;">
+                <h3 style="margin: 0; color: #333; font-size: 16px;">Poltrona Sacco</h3>
+                <p style="margin: 0; font-size: 12px; color: #666;">Zanotta, 1968</p>
+            </div>
+        </div>
+
+        <model-viewer id="viewer" 
+            src="poltrona_sacco.glb" 
+            ios-src="POLTRONA_SACCO.usdz" 
+            ar ar-modes="quick-look webxr" 
+            camera-controls shadow-intensity="1">
+            
+            <button slot="ar-button" id="ar-trigger" class="btn btn-red" style="position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); white-space: nowrap;">
+                Posiziona e cattura
+            </button>
         </model-viewer>
     </div>
 
-    <div id="collection" class="page">
-        <h2>LA TUA COLLEZIONE</h2>
-        <div class="grid">
-            <div>
+    <div id="screen-archive" class="screen">
+        <h2>IL TUO ARCHIVIO</h2>
+        <div class="archive-grid">
+            <div class="archive-item">
                 <img src="https://i.ibb.co/Lz0m6mY/sacco.png" alt="Sacco">
-                <p style="font-size: 10px; font-weight: bold; color: green;">CATTURATO</p>
+                <p style="font-size: 10px; font-weight: bold; color: var(--primary-red); margin-top:5px;">CATTURATO</p>
             </div>
-            <img src="https://via.placeholder.com/100?text=?">
-            <img src="https://via.placeholder.com/100?text=?">
+            <div class="archive-item" style="opacity: 0.2;"><div style="height:60px; background:#ccc; border-radius:8px;"></div></div>
+            <div class="archive-item" style="opacity: 0.2;"><div style="height:60px; background:#ccc; border-radius:8px;"></div></div>
         </div>
-        <div class="nav-bar">
-            <div onclick="show('ar-screen')" style="cursor:pointer; font-size: 24px;">🏠</div>
-            <div style="color: var(--primary-red); font-size: 24px;">📁</div>
-            <div style="font-size: 24px;">👤</div>
-        </div>
+        <button class="btn btn-red" onclick="changeScreen('screen-3d')">Torna alla camera</button>
+    </div>
+
+    <div id="overlay"></div>
+    <div id="iphone-popup">
+        <h2 style="margin:0; font-size: 18px; color:var(--primary-red)">Ottimo! 🛋️</h2>
+        <p style="font-size: 14px; margin: 10px 0 20px 0; line-height: 1.4;">Complimenti! La poltrona sacco è stata aggiunta alla tua collezione.</p>
+        <button class="btn btn-black" onclick="openApp()">Apri nell'app</button>
     </div>
 
     <script>
-        let isArActive = false;
+        let arStarted = false;
 
-        function show(id) {
-            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-            const target = document.getElementById(id);
-            target.style.display = (id === 'login' || id === 'splash') ? 'flex' : 'block';
+        // Passaggio automatico dalla Splash al Login dopo 2.5 secondi
+        window.onload = () => {
+            setTimeout(() => {
+                changeScreen('screen-login');
+            }, 2500);
+        };
+
+        function changeScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
 
-        const modelViewer = document.querySelector('#viewer');
-        const popup = document.getElementById('popup-success');
-        const overlay = document.getElementById('overlay');
+        // Monitoraggio AR per iPhone
+        document.getElementById('ar-trigger').addEventListener('click', () => {
+            arStarted = true;
+        });
 
-        // Monitoraggio per iPhone (iOS Quick Look)
-        modelViewer.addEventListener('ar-status', (event) => {
-            if (event.detail.status === 'session-started') {
-                isArActive = true; 
+        // Quando torni dall'AR su iPhone (iOS Quick Look ready)
+        window.addEventListener('focus', () => {
+            if (arStarted) {
+                setTimeout(() => {
+                    document.getElementById('overlay').style.display = 'block';
+                    document.getElementById('iphone-popup').style.display = 'block';
+                    arStarted = false;
+                }, 1000); // Ritardo per l'animazione di chiusura di iOS
             }
         });
 
-        // Questo evento scatta quando torni a Safari dopo aver chiuso l'AR su iPhone
-        window.addEventListener('pageshow', () => {
-            if (isArActive) {
-                setTimeout(triggerSuccess, 800);
-            }
-        });
-
-        // Backup per iPhone: scatta quando la pagina torna visibile
-        document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === 'visible' && isArActive) {
-                setTimeout(triggerSuccess, 800);
-            }
-        });
-
-        function triggerSuccess() {
-            overlay.style.display = 'block';
-            popup.style.display = 'block';
-            isArActive = false; // Reset per non farlo riapparire a caso
-        }
-
-        function goToCollection() {
-            overlay.style.display = 'none';
-            popup.style.display = 'none';
-            show('collection');
+        function openApp() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('iphone-popup').style.display = 'none';
+            changeScreen('screen-archive');
         }
     </script>
 </body>
