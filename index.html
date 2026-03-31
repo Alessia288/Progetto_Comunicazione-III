@@ -11,15 +11,12 @@
         .page { display: none; width: 100vw; height: 100vh; position: relative; }
         img.fullscreen { width: 100%; height: 100%; object-fit: contain; }
 
-        /* SPLASH SCREEN */
         #splash { display: flex; flex-direction: column; align-items: center; justify-content: space-around; text-align: center; }
         .btn-figma { background-color: var(--primary-red); color: white; border: none; padding: 18px 80px; border-radius: 50px; font-size: 1.2rem; font-weight: bold; cursor: pointer; }
 
-        /* LOGIN SCREEN (USA IL TUO SFONDO ROSSO SE VUOI, O IL CODICE) */
         #login { background-color: var(--primary-red); color: white; flex-direction: column; align-items: center; justify-content: center; }
         .input-sim { background: rgba(255,255,255,0.2); border-radius: 15px; width: 80%; padding: 15px; margin: 10px 0; border: 1px solid rgba(255,255,255,0.3); }
 
-        /* AR SCREEN */
         #ar-screen { height: 100vh; }
         model-viewer { width: 100%; height: 100%; }
         .capture-btn { position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); background: white; border: 2px solid var(--primary-red); border-radius: 50px; padding: 15px 30px; font-weight: bold; z-index: 10; cursor: pointer; }
@@ -47,20 +44,18 @@
     </div>
 
     <div id="archive" class="page">
-        <img src="archivio.png" class="fullscreen">
+        <img src="archivio_sfondo.png" class="fullscreen">
         <div onclick="showPage('detail')" style="position:absolute; top:58%; left:5%; width:30%; height:20%; cursor:pointer;"></div>
     </div>
 
     <div id="detail" class="page">
-        <img src="scheda.png" class="fullscreen">
+        <img src="scheda_sacco.png" class="fullscreen">
         <div onclick="showPage('archive')" style="position:absolute; bottom:0; left:40%; width:20%; height:10%; cursor:pointer;"></div>
     </div>
 
     <script>
         function showPage(id) {
-            // Nasconde tutte le pagine
             document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-            // Mostra quella selezionata
             const target = document.getElementById(id);
             if(id === 'ar-screen' || id === 'archive' || id === 'detail') {
                 target.style.display = 'block';
