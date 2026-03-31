@@ -6,22 +6,33 @@
     <title>Design Hunt AR</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     
-    <style>
+       <style>
         :root { --primary-red: #a51d16; --bg-gray: #f8f8f8; }
-        body, html { margin: 0; padding: 0; font-family: -apple-system, sans-serif; height: 100%; overflow: hidden; background: white; }
+        body, html { margin: 0; padding: 0; font-family: -apple-system, sans-serif; height: 100%; width: 100%; overflow: hidden; background: white; }
 
         /* GESTIONE SCHERMATE */
-        .screen { display: none; height: 100vh; width: 100vw; position: absolute; top: 0; left: 0; align-items: center; justify-content: center; text-align: center; }
+        .screen { display: none; height: 100vh; width: 100vw; position: absolute; top: 0; left: 0; align-items: center; justify-content: center; text-align: center; box-sizing: border-box; }
         .active { display: flex; flex-direction: column; }
 
-        /* 1. SPLASH SCREEN (La primissima che vedi) */
+        /* 1. SPLASH SCREEN */
         #screen-splash { background-color: white; z-index: 10000; }
         .splash-logo { width: 120px; margin-bottom: 20px; }
         #screen-splash h1 { font-size: 36px; color: var(--primary-red); letter-spacing: -1px; margin: 0; }
 
-        /* 2. LOGIN */
-        #screen-login { background-color: var(--primary-red); color: white; padding: 20px; }
-        .input-box { background: rgba(255,255,255,0.2); border: 1px solid white; border-radius: 12px; width: 80%; padding: 15px; margin: 10px 0; color: white; text-align: left; font-size: 14px; max-width: 300px; }
+        /* 2. LOGIN (SISTEMATO PER CENTRATURA) */
+        #screen-login { background-color: var(--primary-red); color: white; padding: 40px 20px; }
+        .input-box { 
+            background: rgba(255,255,255,0.2); 
+            border: 1px solid white; 
+            border-radius: 12px; 
+            width: 280px; /* Larghezza fissa per non farla scappare */
+            padding: 15px; 
+            margin: 10px auto; /* Centra perfettamente a destra e sinistra */
+            color: white; 
+            text-align: left; 
+            font-size: 14px; 
+            box-sizing: border-box; 
+        }
 
         /* 3. SCHERMATA OGGETTO 3D */
         #screen-3d { background: white; justify-content: flex-start; }
@@ -31,21 +42,21 @@
 
         /* 4. ARCHIVIO */
         #screen-archive { background: var(--bg-gray); justify-content: flex-start; padding-top: 40px; }
-        .archive-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 20px; width: 90%; }
+        .archive-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 20px; width: 90%; margin: 0 auto; }
         .archive-item { background: white; border-radius: 15px; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
         .archive-item img { width: 100%; border-radius: 10px; }
 
-        /* BOTTONI STILE DESIGN */
-        .btn { border: none; border-radius: 50px; padding: 16px 40px; font-weight: 600; font-size: 16px; cursor: pointer; transition: 0.3s; width: 80%; max-width: 300px; }
-        .btn-white { background: white; color: var(--primary-red); margin-top: 20px; }
-        .btn-red { background: var(--primary-red); color: white; margin-top: 20px; }
-        .btn-black { background: black; color: white; width: 100%; margin-top: 15px; }
+        /* BOTTONI */
+        .btn { border: none; border-radius: 50px; padding: 16px 40px; font-weight: 600; font-size: 16px; cursor: pointer; width: 280px; margin: 20px auto 0; box-sizing: border-box; }
+        .btn-white { background: white; color: var(--primary-red); }
+        .btn-red { background: var(--primary-red); color: white; }
+        .btn-black { background: black; color: white; margin-top: 15px; }
 
-        /* POPUP IPHONE (iOS Quick Look ready) */
+        /* POPUP IPHONE */
         #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 9998; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
         #iphone-popup { 
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            width: 80%; max-width: 300px; background: rgba(255,255,255,0.95); 
+            width: 280px; background: rgba(255,255,255,0.95); 
             border-radius: 20px; padding: 25px; text-align: center; z-index: 9999;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
