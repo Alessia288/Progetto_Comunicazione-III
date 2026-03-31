@@ -6,101 +6,103 @@
     <title>Design Hunt AR</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        :root { --primary-red: #a51d16; }
-        body, html { margin: 0; padding: 0; font-family: sans-serif; background-color: white; width: 100%; height: 100%; overflow: hidden; }
+        :root { --primary-red: #a51d16; --bg-gray: #f8f8f8; --text-dark: #1a1a1b; }
+        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; background-color: white; }
         
-        /* Tutte le pagine sono nascoste di default e occupano tutto lo schermo */
-        .page { 
-            display: none; 
-            position: absolute; 
-            top: 0; left: 0; 
-            width: 100vw; 
-            height: 100vh; 
-            background: white;
-            z-index: 10;
-        }
+        /* SCHERMATA 1: SPLASH */
+        #splash { display: flex; flex-direction: column; align-items: center; justify-content: space-around; height: 100vh; text-align: center; }
+        
+        /* SCHERMATA 2: LOGIN */
+        #login { display: none; background-color: var(--primary-red); height: 100vh; color: white; padding: 40px 20px; flex-direction: column; align-items: center; text-align: center; }
+        .input-group { background: rgba(255,255,255,0.2); border-radius: 15px; width: 100%; max-width: 350px; padding: 15px; margin: 10px 0; border: 1px solid rgba(255,255,255,0.3); }
 
-        img.fullscreen { width: 100%; height: 100%; object-fit: contain; }
+        /* SCHERMATA 3: AR */
+        #ar-screen { display: none; height: 100vh; width: 100%; position: relative; }
+        model-viewer { width: 100%; height: 100%; background-color: #eee; }
+        .capture-btn { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: white; border: 2px solid var(--primary-red); border-radius: 50px; padding: 15px 30px; font-weight: bold; z-index: 10; cursor: pointer; }
 
-        /* SPLASH & LOGIN */
-        #splash { display: flex; flex-direction: column; align-items: center; justify-content: space-around; text-align: center; }
-        #login { background-color: var(--primary-red); color: white; flex-direction: column; align-items: center; justify-content: center; z-index: 20; }
-        .btn-figma { background-color: var(--primary-red); color: white; border: none; padding: 18px 80px; border-radius: 50px; font-size: 1.2rem; font-weight: bold; cursor: pointer; }
-        .input-sim { background: rgba(255,255,255,0.2); border-radius: 15px; width: 80%; padding: 15px; margin: 10px 0; border: 1px solid rgba(255,255,255,0.3); }
+        /* SCHERMATA 4: COLLEZIONE */
+        #collection { display: none; background: white; min-height: 100vh; padding: 20px; text-align: center; }
+        .stats { color: var(--primary-red); font-size: 0.8rem; margin: 10px 0; }
+        .tabs { display: flex; border-bottom: 2px solid #eee; margin-bottom: 20px; }
+        .tab { flex: 1; padding: 10px; font-weight: bold; color: #666; }
+        .tab.active { color: black; border-bottom: 3px solid var(--primary-red); }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .grid img { width: 100%; border-radius: 10px; }
 
-        /* AR SCREEN: Il model-viewer deve stare sopra tutto quando attivo */
-        #ar-screen { z-index: 30; background: #eee; }
-        model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
+        /* NAV BAR IN BASSO */
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #f9f9f9; display: flex; justify-content: space-around; padding: 15px 0; border-top-left-radius: 30px; border-top-right-radius: 30px; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
+        .nav-item { font-size: 24px; color: #333; }
+        .nav-item.active { color: var(--primary-red); }
 
-        /* SCHERMATA ARCHIVIO & DETTAGLIO */
-        #archive { z-index: 40; }
-        #detail { z-index: 50; }
+        /* BOTTONI */
+        .btn-figma { background-color: var(--primary-red); color: white; border: none; padding: 18px 80px; border-radius: 50px; font-size: 1.1rem; font-weight: bold; cursor: pointer; }
+        .btn-black { background-color: black; width: 100%; max-width: 350px; margin-top: 40px; }
     </style>
 </head>
 <body>
 
-    <div id="splash" class="page" style="display: flex;">
+    <div id="splash">
         <img src="logo.png" style="width: 150px;">
         <h1>Design Hunt</h1>
-        <button class="btn-figma" onclick="showPage('login')">Inizia</button>
+        <button class="btn-figma" onclick="show('login')">Inizia</button>
     </div>
 
-    <div id="login" class="page">
+    <div id="login">
         <h2>Bentornato</h2>
-        <div class="input-sim">eleonora.rossi@example.com</div>
-        <div class="input-sim">••••••••••••••••</div>
-        <button class="btn-figma" style="background: black; margin-top: 50px;" onclick="showPage('ar-screen')">Prossimo ></button>
+        <p>accedi al tuo account</p>
+        <div class="input-group">eleonora.rossi@example.com</div>
+        <div class="input-group">••••••••••••••••</div>
+        <button class="btn-figma btn-black" onclick="show('ar-screen')">Prossimo ></button>
     </div>
 
-    <div id="ar-screen" class="page">
-        <model-viewer 
-            src="poltrona_sacco.glb" 
-            ios-src="POLTRONA_SACCO.usdz" 
-            ar 
-            ar-modes="webxr scene-viewer quick-look" 
-            camera-controls 
-            shadow-intensity="1">
-            </model-viewer>
+    <div id="ar-screen">
+        <model-viewer src="poltrona_sacco.glb" ios-src="POLTRONA_SACCO.usdz" ar ar-modes="webxr scene-viewer quick-look" camera-controls shadow-intensity="1">
+            <button slot="ar-button" class="capture-btn" id="captureBtn">🛋️ POSIZIONA E CATTURA</button>
+        </model-viewer>
     </div>
 
-    <div id="archive" class="page">
-        <img src="archivio_sfondo.png" class="fullscreen">
-        <div onclick="showPage('detail')" style="position:absolute; top:58%; left:5%; width:30%; height:20%;"></div>
-    </div>
+    <div id="collection">
+        <h2>LA TUA COLLEZIONE</h2>
+        <p style="font-size: 0.9rem;">Dalle strade di Calenzano al tuo smartphone...</p>
+        <div class="stats">Totale Oggetti Catturati: 47<br>Punti Design: 12.500</div>
+        
+        <div class="tabs">
+            <div class="tab active">3D</div>
+            <div class="tab">About</div>
+            <div class="tab">Status</div>
+        </div>
 
-    <div id="detail" class="page">
-        <img src="scheda_sacco.png" class="fullscreen">
-        <div onclick="showPage('archive')" style="position:absolute; bottom:0; left:40%; width:20%; height:10%;"></div>
+        <div class="grid" id="itemsGrid">
+            <div onclick="alert('Poltrona Sacco: Zanotta, 1968')">
+                <img src="https://i.ibb.co/Lz0m6mY/sacco.png" alt="Sacco">
+                <p style="font-size: 10px;">CATTURATO</p>
+            </div>
+            <img src="https://via.placeholder.com/100?text=?" style="opacity: 0.3;">
+            <img src="https://via.placeholder.com/100?text=?" style="opacity: 0.3;">
+        </div>
+
+        <div class="nav-bar">
+            <div class="nav-item">🏠</div>
+            <div class="nav-item active">📁</div>
+            <div class="nav-item">👤</div>
+        </div>
     </div>
 
     <script>
-        function showPage(id) {
-            // Nascondiamo TUTTO
-            document.querySelectorAll('.page').forEach(p => {
-                p.style.display = 'none';
-            });
-            
-            // Mostriamo solo la pagina scelta
-            const target = document.getElementById(id);
-            if (id === 'splash' || id === 'login') {
-                target.style.display = 'flex';
-            } else {
-                target.style.display = 'block';
-            }
+        function show(id) {
+            document.getElementById('splash').style.display = 'none';
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('ar-screen').style.display = 'none';
+            document.getElementById('collection').style.display = 'none';
+            document.getElementById(id).style.display = id === 'ar-screen' ? 'block' : 'flex';
+            if(id === 'collection') document.getElementById(id).style.display = 'block';
         }
 
-        // GESTIONE AR
-        const modelViewer = document.querySelector("model-viewer");
-
-        modelViewer.addEventListener('ar-status', (event) => {
-            // Quando l'utente ESCE dall'AR (clicca la X)
-            if(event.detail.status === 'not-presenting') {
-                // Aspettiamo un attimo che il visore si chiuda
-                setTimeout(() => {
-                    alert("Complimenti! La Poltrona Sacco è stata aggiunta alla tua collezione.");
-                    showPage('archive');
-                }, 500);
-            }
+        // Simula la cattura e vai alla collezione
+        document.getElementById('captureBtn').addEventListener('click', () => {
+            alert("Hai catturato la Poltrona Sacco! +500 Punti Design");
+            show('collection');
         });
     </script>
 </body>
