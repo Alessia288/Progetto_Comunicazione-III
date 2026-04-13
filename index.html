@@ -22,66 +22,65 @@
 
         /* 1. SPLASH SCREEN */
         #screen-splash { background: white; justify-content: center; z-index: 5000; }
-        #screen-splash h1 { color: var(--primary-red); font-size: 32px; margin-top: 15px; font-weight: 800; }
+        #screen-splash h1 { color: var(--primary-red); font-size: 32px; font-weight: 800; }
 
-        /* OVERLAYS */
+        /* OVERLAYS (Prompt iOS e Successo) */
         #global-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 6000; backdrop-filter: blur(5px); }
-        #ios-install-prompt, #capture-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 270px; background: rgba(255,255,255,0.95); border-radius: 14px; text-align: center; z-index: 7000; display: none; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        #ios-install-prompt, #capture-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; background: rgba(255,255,255,0.95); border-radius: 14px; text-align: center; z-index: 7000; display: none; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
 
         /* 2. LOGIN */
         #screen-login { background: var(--primary-red); color: white; justify-content: center; }
         .input-box { background: rgba(255,255,255,0.2); border: 1px solid white; border-radius: 12px; width: 280px; padding: 15px; margin: 10px 0; color: white; text-align: left; }
 
-        /* HEADER & TABS */
-        .app-header { width: 100%; padding: 50px 0 15px; background: white; border-bottom: 0.5px solid #ccc; text-align: center; font-weight: 700; }
+        /* HEADER & TABS ARCHIVIO */
+        .app-header { width: 100%; padding: 50px 0 10px; background: white; text-align: center; font-weight: 700; font-size: 18px; }
         .archive-tabs { width: 100%; display: flex; border-bottom: 1px solid #ddd; background: white; }
         .tab-link { flex: 1; text-align: center; padding: 15px 0; font-size: 13px; color: #888; font-weight: 600; cursor: pointer; position: relative; }
         .active-link { color: black; }
-        .active-link::after { content:''; position: absolute; bottom: 0; left: 15%; width: 70%; height: 3px; background: var(--primary-red); border-radius: 10px; }
+        .active-link::after { content:''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--primary-red); }
 
-        /* SFONDO ROSSO SFOCATO (Per Archivio) */
-        .red-blur-bg { position: absolute; top: -50px; left: 0; width: 100%; height: 300px; background: radial-gradient(circle at 20% 20%, rgba(165, 29, 22, 0.7) 0%, rgba(255, 255, 255, 0) 70%); filter: blur(40px); z-index: 1; pointer-events: none; }
+        /* SFONDO ROSSO SFOCATO IN ALTO */
+        .red-header-bg { width: 100%; height: 180px; background: linear-gradient(180deg, var(--primary-red) 0%, rgba(165,29,22,0.8) 50%, transparent 100%); position: absolute; top: 0; z-index: 1; }
 
-        /* CONTENUTO ARCHIVIO */
-        .tab-content { display: none; width: 100%; padding: 20px; box-sizing: border-box; flex-direction: column; align-items: center; overflow-y: auto; height: calc(100vh - 180px); z-index: 2; }
+        /* CARD BIANCA ARROTONDATA */
+        .main-content-card { 
+            position: relative; width: 100%; background: white; border-radius: 40px 40px 0 0; 
+            margin-top: 100px; z-index: 2; flex-grow: 1; display: flex; flex-direction: column; align-items: center; 
+            padding-top: 20px; box-shadow: 0 -10px 20px rgba(0,0,0,0.1);
+        }
+
+        .tab-content { display: none; width: 100%; padding: 20px; box-sizing: border-box; flex-direction: column; align-items: center; overflow-y: auto; height: calc(100vh - 350px); }
         .active-content { display: flex; }
 
-        .info-main-img { width: 160px; height: 160px; object-fit: contain; margin-bottom: 15px; }
-        .info-title { font-size: 16px; font-weight: 800; margin-bottom: 10px; text-transform: uppercase; }
-        .description { font-size: 13px; line-height: 1.5; color: #555; text-align: left; margin-bottom: 20px; }
+        /* DETTAGLI INFO & STATO */
+        .info-img { width: 150px; height: 150px; object-fit: contain; margin-bottom: 10px; }
+        .product-title { font-size: 14px; font-weight: 700; text-transform: uppercase; margin-bottom: 20px; }
+        .desc-text { font-size: 14px; line-height: 1.4; color: #444; text-align: left; margin: 15px 0; width: 100%; }
 
-        /* INFO GRID BOXES */
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
-        .info-box { background: white; border: 1.5px solid var(--border-light); border-radius: 12px; padding: 10px; text-align: left; }
-        .info-label { font-size: 10px; color: #888; margin-bottom: 4px; display: block; }
-        .info-value { font-size: 13px; font-weight: 700; color: #222; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 10px; }
+        .info-box { border: 1px solid var(--border-light); border-radius: 12px; padding: 12px; text-align: left; background: white; }
+        .info-box span { display: block; font-size: 11px; color: #888; margin-bottom: 5px; }
+        .info-box b { font-size: 13px; color: #222; }
 
-        /* STATISTICHE */
-        .stat-container { width: 100%; margin-bottom: 20px; }
-        .stat-row { display: flex; align-items: center; margin-bottom: 8px; font-size: 12px; }
-        .stat-name { width: 85px; color: #666; }
-        .stat-num { width: 25px; text-align: right; margin-right: 8px; font-weight: 700; }
-        .bar-bg { flex-grow: 1; height: 6px; background: #eee; border-radius: 10px; }
+        .stat-row { width: 100%; display: flex; align-items: center; margin-bottom: 8px; font-size: 13px; }
+        .stat-label { width: 90px; color: #666; }
+        .stat-val { width: 30px; font-weight: 700; margin: 0 10px; }
+        .bar-bg { flex-grow: 1; height: 6px; background: #E5E5EA; border-radius: 10px; position: relative; }
         .bar-fill { height: 100%; background: black; border-radius: 10px; }
 
         /* TAGS */
-        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 15px; }
-        .tag { padding: 5px 12px; border-radius: 15px; font-size: 11px; font-weight: 600; border: 1px solid; }
-        .tag-orange { border-color: #FF9500; color: #FF9500; }
-        .tag-red { border-color: #FF3B30; color: #FF3B30; }
-        .tag-blue { border-color: #007AFF; color: #007AFF; }
+        .tags-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; justify-content: center; }
+        .tag { padding: 6px 15px; border-radius: 20px; font-size: 12px; border: 1px solid; background: white; }
 
-        /* LINK SKETCHFAB */
-        .sketchfab-link { background: #e0e0e0; color: #444; padding: 12px 20px; border-radius: 10px; text-decoration: none; font-size: 11px; font-weight: 800; margin-top: 20px; border: 1px solid #ccc; }
-
-        /* NAVBAR */
-        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 85px; background: white; display: flex; justify-content: space-around; border-top: 0.5px solid #ccc; padding-top: 10px; z-index: 1000; }
-        .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); width: 22%; cursor: pointer; text-decoration: none; }
+        /* NAVBAR (STILE ICONE) */
+        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 85px; background: #F9F9F9; display: flex; justify-content: space-around; border-top: 0.5px solid #ccc; padding-top: 10px; z-index: 1000; }
+        .tab-item { display: flex; flex-direction: column; align-items: center; width: 20%; color: #999; cursor: pointer; }
         .tab-item.active-tab { color: var(--primary-red); }
-        .tab-item svg { width: 26px; height: 26px; margin-bottom: 4px; fill: currentColor; }
+        .tab-item img { width: 28px; height: 28px; margin-bottom: 5px; filter: grayscale(1); opacity: 0.6; }
+        .active-tab img { filter: none; opacity: 1; }
         .tab-label { font-size: 10px; font-weight: 600; text-transform: uppercase; }
 
-        .btn-red { background: var(--primary-red); color: white; border-radius: 50px; border: none; padding: 16px; font-weight: bold; cursor: pointer; }
+        .btn-red { background: var(--primary-red); color: white; border-radius: 50px; border: none; padding: 15px 30px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -93,99 +92,107 @@
     <div id="global-overlay"></div>
     
     <div id="ios-install-prompt">
-        <div style="padding: 22px; font-weight: 600;">Installa Design Hunt o accedi</div>
+        <div style="padding: 22px; font-weight: 600; font-size: 15px;">Scarica l'app o accedi</div>
         <div style="display: flex; border-top: 0.5px solid #bbb;">
-            <div style="flex:1; padding:12px; color:#007AFF;" onclick="goLogin()">Accedi</div>
+            <div style="flex:1; padding:15px; color:#007AFF; border-right:0.5px solid #bbb;" onclick="location.href='https://apple.com/app-store'">Vai a App Store</div>
+            <div style="flex:1; padding:15px; color:#007AFF; font-weight:bold;" onclick="goLogin()">Accedi</div>
         </div>
     </div>
 
     <div id="screen-login" class="screen">
-        <h1>Accedi</h1>
+        <h1 style="margin-bottom: 20px;">Accedi</h1>
         <div class="input-box">eleonora.rossi@example.com</div>
         <div class="input-box">••••••••</div>
-        <button class="btn-red" style="width: 280px; background: white; color: var(--primary-red);" onclick="changeScreen('screen-capture')">Accedi</button>
+        <button class="btn-red" style="background:white; color:var(--primary-red); margin-top: 20px;" onclick="changeScreen('screen-capture')">Accedi</button>
     </div>
 
     <div id="screen-capture" class="screen">
         <div class="app-header">CATTURA</div>
-        <model-viewer id="viewer" src="poltrona_sacco.glb" ar camera-controls style="width: 100%; height: 60vh;">
-            <button slot="ar-button" id="ar-trigger" class="btn-red" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">Apri Camera</button>
+        <model-viewer id="viewer" src="poltrona_sacco.glb" ar ar-modes="quick-look webxr" camera-controls style="width:100%; height:65vh;">
+            <button slot="ar-button" id="ar-trigger" class="btn-red" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">Apri Camera e Cattura</button>
         </model-viewer>
+        
         <div class="tab-bar">
-            <div class="tab-item active-tab"><svg viewBox="0 0 24 24"><path d="M12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm7-4h-2.67l-1.83-2H9.5L7.67 7H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-7 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg><span class="tab-label">Cattura</span></div>
-            <div class="tab-item" onclick="changeScreen('screen-archive')"><svg viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg><span class="tab-label">Archivio</span></div>
+            <div class="tab-item active-tab"><img src="https://cdn-icons-png.flaticon.com/512/685/685655.png"><span class="tab-label">Cattura</span></div>
+            <div class="tab-item" onclick="changeScreen('screen-archive')"><img src="https://cdn-icons-png.flaticon.com/512/3767/3767084.png"><span class="tab-label">Archivio</span></div>
+            <div class="tab-item"><img src="https://cdn-icons-png.flaticon.com/512/1144/1144760.png"><span class="tab-label">Profilo</span></div>
+            <div class="tab-item"><img src="https://cdn-icons-png.flaticon.com/512/3524/3524659.png"><span class="tab-label">Impostazioni</span></div>
         </div>
     </div>
 
     <div id="screen-archive" class="screen">
-        <div class="red-blur-bg"></div>
-        <div class="app-header">IL TUO ARCHIVIO</div>
-        <div class="archive-tabs">
-            <div class="tab-link active-link" onclick="openArchiveTab(event, 'tab-3d')">3D</div>
-            <div class="tab-link" onclick="openArchiveTab(event, 'tab-info')">Info</div>
-            <div class="tab-link" onclick="openArchiveTab(event, 'tab-stato')">Stato</div>
-        </div>
+        <div class="red-header-bg"></div>
+        
+        <div class="main-content-card">
+            <img src="sacco.png" class="info-img">
+            <div class="product-title">Poltrona Sacco</div>
 
-        <div id="tab-3d" class="tab-content active-content">
-            <img src="sacco.png" class="info-main-img">
-            <div class="info-title">Poltrona Sacco</div>
-            <p class="description" style="text-align: center;">Visualizza e scarica il modello originale.</p>
-            <a href="https://sketchfab.com/3d-models/sacco-zanotta-08638600d3d54460b37c6c4c6225e791" target="_blank" class="sketchfab-link">SCARICA IL TUO 3D</a>
-        </div>
-
-        <div id="tab-info" class="tab-content">
-            <img src="sacco.png" class="info-main-img">
-            <div class="info-title">Poltrona Sacco</div>
-            <p class="description">La poltrona sacco non si limita ad accogliere il corpo: lo segue, lo avvolge e ridefinisce il modo stesso di abitare lo spazio.</p>
-            <div class="info-grid">
-                <div class="info-box"><span class="info-label">⚖️ Peso</span><span class="info-value">10 kg</span></div>
-                <div class="info-box"><span class="info-label">📏 Taglia</span><span class="info-value">80x80x68 cm</span></div>
-                <div class="info-box"><span class="info-label">🪑 Categoria</span><span class="info-value">Seduta</span></div>
-                <div class="info-box"><span class="info-label">🔘 Designer</span><span class="info-value">Zanotta</span></div>
+            <div class="archive-tabs">
+                <div class="tab-link active-link" onclick="openArchiveTab(event, 'tab-3d')">3D</div>
+                <div class="tab-link" onclick="openArchiveTab(event, 'tab-info')">Info</div>
+                <div class="tab-link" onclick="openArchiveTab(event, 'tab-stato')">Stato</div>
             </div>
-        </div>
 
-        <div id="tab-stato" class="tab-content">
-            <img src="sacco.png" class="info-main-img">
-            <div class="info-title">Statistiche</div>
-            <div class="stat-container">
-                <div class="stat-row"><span class="stat-name">Comfort</span><span class="stat-num">92</span><div class="bar-bg"><div class="bar-fill" style="width:92%"></div></div></div>
-                <div class="stat-row"><span class="stat-name">Flessibilità</span><span class="stat-num">88</span><div class="bar-bg"><div class="bar-fill" style="width:88%"></div></div></div>
-                <div class="stat-row"><span class="stat-name">Iconicità</span><span class="stat-num">97</span><div class="bar-bg"><div class="bar-fill" style="width:97%"></div></div></div>
-                <div class="stat-row"><span class="stat-name">Resistenza</span><span class="stat-num">78</span><div class="bar-bg"><div class="bar-fill" style="width:78%"></div></div></div>
+            <div id="tab-3d" class="tab-content active-content">
+                <p class="desc-text" style="text-align:center;">Scarica il modello originale sul tuo dispositivo.</p>
+                <a href="https://sketchfab.com/alessialeporatti/models" target="_blank" class="btn-red" style="text-decoration:none; margin-top:20px;">SCARICA IL TUO 3D</a>
             </div>
-            <p class="description" style="font-size: 12px; color: #777;">Icona del design anni '60, rappresenta comfort, libertà e rottura delle forme tradizionali.</p>
-            <div class="tags-container">
-                <span class="tag tag-orange">icon design</span>
-                <span class="tag tag-red">shape-adaptive</span>
-                <span class="tag tag-blue">soft seating</span>
+
+            <div id="tab-info" class="tab-content">
+                <p class="desc-text">La poltrona sacco non si limita ad accogliere il corpo: lo segue, lo avvolge e ridefinisce il modo stesso di abitare lo spazio.</p>
+                <div class="info-grid">
+                    <div class="info-box"><span>⚖️ Peso</span><b>10 kg</b></div>
+                    <div class="info-box"><span>📏 Taglia</span><b>80x80x68 cm</b></div>
+                    <div class="info-box"><span>🪑 Categoria</span><b>Seduta</b></div>
+                    <div class="info-box"><span>🔘 Designer</span><b>Zanotta</b></div>
+                </div>
+            </div>
+
+            <div id="tab-stato" class="tab-content">
+                <div class="stat-row"><span class="stat-label">Comfort</span><span class="stat-val">92</span><div class="bar-bg"><div class="bar-fill" style="width:92%"></div></div></div>
+                <div class="stat-row"><span class="stat-label">Flessibilità</span><span class="stat-val">88</span><div class="bar-bg"><div class="bar-fill" style="width:88%"></div></div></div>
+                <div class="stat-row"><span class="stat-label">Iconicità</span><span class="stat-val">97</span><div class="bar-bg"><div class="bar-fill" style="width:97%"></div></div></div>
+                <div class="stat-row"><span class="stat-label">Resistenza</span><span class="stat-val">78</span><div class="bar-bg"><div class="bar-fill" style="width:78%"></div></div></div>
+                
+                <p class="desc-text" style="font-size:12px; color:#666;">Icona del design anni '60, rappresenta comfort, libertà e rottura delle forme tradizionali.</p>
+                
+                <div class="tags-row">
+                    <span class="tag" style="color:#FF9500; border-color:#FF9500;">icon design</span>
+                    <span class="tag" style="color:#FF3B30; border-color:#FF3B30;">shape-adaptive</span>
+                    <span class="tag" style="color:#007AFF; border-color:#007AFF;">lightweight</span>
+                    <span class="tag" style="color:#4CD964; border-color:#4CD964;">soft seating</span>
+                </div>
             </div>
         </div>
 
         <div class="tab-bar">
-            <div class="tab-item" onclick="changeScreen('screen-capture')"><svg viewBox="0 0 24 24"><path d="M12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm7-4h-2.67l-1.83-2H9.5L7.67 7H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-7 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg><span class="tab-label">Cattura</span></div>
-            <div class="tab-item active-tab"><svg viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg><span class="tab-label">Archivio</span></div>
+            <div class="tab-item" onclick="changeScreen('screen-capture')"><img src="https://cdn-icons-png.flaticon.com/512/685/685655.png"><span class="tab-label">Cattura</span></div>
+            <div class="tab-item active-tab"><img src="https://cdn-icons-png.flaticon.com/512/3767/3767084.png"><span class="tab-label">Archivio</span></div>
+            <div class="tab-item"><img src="https://cdn-icons-png.flaticon.com/512/1144/1144760.png"><span class="tab-label">Profilo</span></div>
+            <div class="tab-item"><img src="https://cdn-icons-png.flaticon.com/512/3524/3524659.png"><span class="tab-label">Impostazioni</span></div>
         </div>
     </div>
 
     <div id="capture-popup">
         <div style="padding: 25px;">
             <h3 style="margin-top:0;">Ottimo! 🛋️</h3>
-            <p style="font-size:15px; color:#666;">Hai catturato la sedia sacco!</p>
-            <button class="btn-red" style="width:100%;" onclick="closePopup()">OK</button>
+            <p style="font-size:14px; color:#666;">Hai catturato la poltrona sacco!<br>Vedila ora nel tuo archivio.</p>
+            <button class="btn-red" style="width:100%;" onclick="closeSuccessPopup()">OK</button>
         </div>
     </div>
 
     <script>
-        let arStarted = false;
+        let isARActive = false;
+
+        // 1. Prompt iOS super veloce (500ms)
         setTimeout(() => {
             document.getElementById('global-overlay').style.display = 'block';
             document.getElementById('ios-install-prompt').style.display = 'block';
-        }, 1000);
+        }, 500);
 
         function goLogin() {
-            document.getElementById('global-overlay').style.display = 'none';
             document.getElementById('ios-install-prompt').style.display = 'none';
+            document.getElementById('global-overlay').style.display = 'none';
             document.getElementById('screen-splash').style.display = 'none';
             changeScreen('screen-login');
         }
@@ -195,29 +202,32 @@
             document.getElementById(id).classList.add('active');
         }
 
+        // 2. Logica AR: mostra popup solo DOPO il ritorno
+        document.getElementById('ar-trigger').addEventListener('click', () => {
+            isARActive = true;
+        });
+
+        window.addEventListener('focus', () => {
+            if (isARActive) {
+                setTimeout(() => {
+                    document.getElementById('global-overlay').style.display = 'block';
+                    document.getElementById('capture-popup').style.display = 'block';
+                    isARActive = false;
+                }, 800);
+            }
+        });
+
+        function closeSuccessPopup() {
+            document.getElementById('global-overlay').style.display = 'none';
+            document.getElementById('capture-popup').style.display = 'none';
+            changeScreen('screen-archive');
+        }
+
         function openArchiveTab(evt, tabId) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active-content'));
             document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active-link'));
             document.getElementById(tabId).classList.add('active-content');
             evt.currentTarget.classList.add('active-link');
-        }
-
-        document.getElementById('ar-trigger').addEventListener('click', () => { arStarted = true; });
-
-        window.addEventListener('focus', () => {
-            if (arStarted) {
-                setTimeout(() => {
-                    document.getElementById('global-overlay').style.display = 'block';
-                    document.getElementById('capture-popup').style.display = 'block';
-                    arStarted = false;
-                }, 400); // Popup velocizzato
-            }
-        });
-
-        function closePopup() {
-            document.getElementById('global-overlay').style.display = 'none';
-            document.getElementById('capture-popup').style.display = 'none';
-            changeScreen('screen-archive');
         }
     </script>
 </body>
