@@ -10,24 +10,31 @@
         :root { 
             --primary-red: #a51d16; 
             --ios-gray: #8E8E93;
-            --bg-light: #F2F2F7;
             --border-light: #E5E5EA;
         }
 
-        body, html { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; height: 100%; width: 100%; overflow: hidden; background: white; color: #333; }
+        body, html { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; height: 100%; width: 100%; overflow: hidden; background: white; }
 
-        /* SCHERMATE */
-        .screen { display: none; height: 100vh; width: 100vw; position: absolute; top: 0; left: 0; flex-direction: column; align-items: center; box-sizing: border-box; overflow: hidden; }
+        /* --- SCHERMATE --- */
+        .screen { display: none; height: 100vh; width: 100vw; position: absolute; top: 0; left: 0; flex-direction: column; align-items: center; box-sizing: border-box; }
         .active { display: flex; }
 
-        /* --- EFFETTO SFONDO ROSSO SFOCATO (FIGMA STYLE) --- */
+        /* 1. SPLASH SCREEN */
+        #screen-splash { background: white; justify-content: center; z-index: 5000; }
+        #screen-splash h1 { color: var(--primary-red); font-size: 32px; margin-top: 15px; font-weight: 800; }
+
+        /* 2. LOGIN */
+        #screen-login { background: var(--primary-red); color: white; justify-content: center; text-align: center; }
+        .input-box { background: rgba(255,255,255,0.2); border: 1px solid white; border-radius: 12px; width: 280px; padding: 15px; margin: 10px 0; color: white; text-align: left; font-size: 14px; }
+        .btn-white { background: white; color: var(--primary-red); border-radius: 50px; border: none; padding: 16px; font-weight: bold; width: 280px; font-size: 16px; margin-top: 20px; cursor: pointer; }
+
+        /* 3. ARCHIVIO (CON SFONDO SFOCATO) */
         .red-blur-bg {
             position: absolute; top: -50px; left: 0; width: 100%; height: 300px;
             background: radial-gradient(circle at 20% 20%, rgba(165, 29, 22, 0.8) 0%, rgba(255, 255, 255, 0) 70%);
             filter: blur(40px); z-index: 1; pointer-events: none;
         }
 
-        /* SCHEDA BIANCA CHE CONTIENE TUTTO */
         .main-card {
             position: relative; width: 90%; max-width: 400px; background: white; 
             border-radius: 30px; margin-top: 80px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
@@ -35,89 +42,84 @@
             padding: 20px 0; height: calc(100vh - 200px); overflow: hidden;
         }
 
-        /* IMMAGINE POLTRONA CENTRATA */
-        .item-main-img { height: 200px; object-fit: contain; margin-bottom: 5px; z-index: 11; }
-        .item-title { font-size: 15px; font-weight: 700; text-align: center; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .item-main-img { height: 160px; object-fit: contain; margin-bottom: 5px; }
+        .item-title { font-size: 15px; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
 
-        /* TABS NELLA SCHEDA */
+        /* TABS INTERNE */
         .archive-tabs { width: 90%; display: flex; border-bottom: 1px solid var(--border-light); margin-bottom: 15px; }
         .tab-link { flex: 1; text-align: center; padding: 10px 0; font-size: 12px; color: #888; font-weight: 600; cursor: pointer; position: relative; }
         .active-link { color: black; }
         .active-link::after { content:''; position: absolute; bottom: -1px; left: 15%; width: 70%; height: 3px; background: var(--primary-red); border-radius: 10px; }
 
-        /* CONTENUTO SCROLLABILE */
-        .tab-content { display: none; width: 100%; padding: 0 20px; box-sizing: border-box; flex-direction: column; overflow-y: auto; text-align: left; }
+        .tab-content { display: none; width: 100%; padding: 0 20px; box-sizing: border-box; flex-direction: column; overflow-y: auto; }
         .active-content { display: flex; }
 
-        /* DESCRIZIONI COMPLETE (TESTO CORRETTO) */
-        .description { font-size: 13px; line-height: 1.6; color: #555; margin-bottom: 20px; margin-top: 0; }
+        /* LINK SKETCHFAB */
+        .sketchfab-link {
+            display: inline-block; background: #e0e0e0; color: #444; 
+            padding: 12px 20px; border-radius: 12px; text-decoration: none; 
+            font-size: 11px; font-weight: 800; margin-top: 30px; 
+            text-transform: uppercase; border: 1px solid #ccc; text-align: center;
+        }
 
-        /* ESTETICA INFO (Screenshot 3) */
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-bottom: 20px; }
-        .info-box { background: white; border: 1.5px solid var(--border-light); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; }
-        .info-label { font-size: 10px; color: #888; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; font-weight: 500; }
-        .info-value { font-size: 13px; font-weight: 700; color: #222; }
-
-        /* ESTETICA STATO (Screenshot 4) */
-        .stat-container { width: 100%; margin-bottom: 15px; }
-        .stat-row { display: flex; align-items: center; margin-bottom: 7px; font-size: 12px; font-weight: 500; }
-        .stat-name { width: 90px; color: #666; text-align: left;}
-        .stat-num { width: 25px; text-align: right; margin-right: 8px; font-weight: 700; color: #222; }
-        .bar-bg { flex-grow: 1; height: 5px; background: #E5E5EA; border-radius: 10px; position: relative; }
+        /* INFO & STATO */
+        .description { font-size: 13px; line-height: 1.6; color: #555; margin-bottom: 20px; text-align: left; }
+        .stat-row { display: flex; align-items: center; margin-bottom: 8px; font-size: 12px; }
+        .stat-name { width: 90px; color: #666; }
+        .stat-num { width: 25px; text-align: right; margin-right: 8px; font-weight: 700; }
+        .bar-bg { flex-grow: 1; height: 5px; background: #E5E5EA; border-radius: 10px; }
         .bar-fill { height: 100%; background: #000; border-radius: 10px; }
 
-        /* TAGS COLORATI */
-        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 15px; margin-bottom: 15px; }
-        .tag { padding: 6px 12px; border-radius: 15px; font-size: 11px; font-weight: 600; border: 1px solid; text-transform: lowercase; }
-        .tag-orange { border-color: #FF9500; color: #FF9500; }
-        .tag-red { border-color: #FF3B30; color: #FF3B30; }
-        .tag-blue { border-color: #007AFF; color: #007AFF; }
-        .tag-green { border-color: #34C759; color: #34C759; }
-
-        /* NAVBAR */
-        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 80px; background: white; display: flex; justify-content: space-around; border-top: 1px solid var(--border-light); padding-top: 8px; z-index: 100; }
-        .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); cursor: pointer; width: 20%; text-decoration: none; }
+        /* NAVBAR BASSA */
+        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 85px; background: white; display: flex; justify-content: space-around; border-top: 1px solid var(--border-light); padding-top: 10px; z-index: 100; }
+        .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); cursor: pointer; text-decoration: none; }
         .tab-item.active-tab { color: var(--primary-red); }
-        .tab-item svg { width: 24px; height: 24px; margin-bottom: 3px; fill: currentColor; }
+        .tab-item svg { width: 26px; height: 26px; margin-bottom: 4px; fill: currentColor; }
         .tab-label { font-size: 10px; font-weight: 600; text-transform: uppercase; }
+
+        /* POPUP */
+        #global-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 6000; backdrop-filter: blur(5px); }
+        #capture-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 270px; background: white; border-radius: 14px; text-align: center; z-index: 7000; display: none; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .btn-red { background: var(--primary-red); color: white; border-radius: 50px; border: none; padding: 12px; font-weight: bold; width: 100%; margin-top: 15px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="screen-archive" class="screen active">
+    <div id="screen-splash" class="screen active">
+        <img src="logo.png" style="width: 110px;" onerror="this.style.display='none'">
+        <h1>Design Hunt</h1>
+    </div>
+
+    <div id="screen-login" class="screen">
+        <h1 style="font-size: 32px; margin-bottom: 20px;">Accedi</h1>
+        <div class="input-box">eleonora.rossi@example.com</div>
+        <div class="input-box">••••••••</div>
+        <button class="btn-white" onclick="doLogin()">Accedi</button>
+    </div>
+
+    <div id="screen-archive" class="screen">
         <div class="red-blur-bg"></div>
+        <div id="global-overlay"></div>
 
         <div class="main-card">
             <img src="sacco.png" class="item-main-img">
             <div class="item-title">Poltrona Sacco</div>
             
             <div class="archive-tabs">
-                <div class="tab-link" onclick="openArchiveTab(event, 'tab-3d')">3D</div>
-                <div class="tab-link active-link" onclick="openArchiveTab(event, 'tab-info')">Info</div>
+                <div class="tab-link active-link" onclick="openArchiveTab(event, 'tab-3d')">3D</div>
+                <div class="tab-link" onclick="openArchiveTab(event, 'tab-info')">Info</div>
                 <div class="tab-link" onclick="openArchiveTab(event, 'tab-stato')">Stato</div>
             </div>
 
-            <div id="tab-info" class="tab-content active-content">
+            <div id="tab-3d" class="tab-content active-content" style="align-items: center; justify-content: center;">
+                <p class="description" style="text-align: center;">Visualizza e scarica il modello originale della poltrona.</p>
+                <a href="https://sketchfab.com/3d-models/sacco-zanotta-08638600d3d54460b37c6c4c6225e791" target="_blank" class="sketchfab-link">
+                    SCARICA IL TUO 3D
+                </a>
+            </div>
+
+            <div id="tab-info" class="tab-content">
                 <p class="description">La poltrona sacco non si limita ad accogliere il corpo: lo segue, lo avvolge e ridefinisce il modo stesso di abitare lo spazio.</p>
-                
-                <div class="info-grid">
-                    <div class="info-box">
-                        <span class="info-label">⚖️ Peso</span>
-                        <span class="info-value">10 kg</span>
-                    </div>
-                    <div class="info-box">
-                        <span class="info-label">📏 Taglia</span>
-                        <span class="info-value">80x80x68 cm</span>
-                    </div>
-                    <div class="info-box">
-                        <span class="info-label">🪑 Categoria</span>
-                        <span class="info-value">Seduta</span>
-                    </div>
-                    <div class="info-box">
-                        <span class="info-label">🔘 Designer</span>
-                        <span class="info-value">Zanotta</span>
-                    </div>
-                </div>
             </div>
 
             <div id="tab-stato" class="tab-content">
@@ -125,56 +127,51 @@
                     <div class="stat-row"><span class="stat-name">Comfort</span><span class="stat-num">92</span><div class="bar-bg"><div class="bar-fill" style="width:92%"></div></div></div>
                     <div class="stat-row"><span class="stat-name">Flessibilità</span><span class="stat-num">88</span><div class="bar-bg"><div class="bar-fill" style="width:88%"></div></div></div>
                     <div class="stat-row"><span class="stat-name">Iconicità</span><span class="stat-num">97</span><div class="bar-bg"><div class="bar-fill" style="width:97%"></div></div></div>
-                    <div class="stat-row"><span class="stat-name">Resistenza</span><span class="stat-num">78</span><div class="bar-bg"><div class="bar-fill" style="width:78%"></div></div></div>
-                    <div class="stat-row"><span class="stat-name">Durabilità</span><span class="stat-num">65</span><div class="bar-bg"><div class="bar-fill" style="width:65%"></div></div></div>
-                    <div class="stat-row"><span class="stat-name">Stabilità</span><span class="stat-num">52</span><div class="bar-bg"><div class="bar-fill" style="width:52%"></div></div></div>
                 </div>
-
-                <p class="description" style="font-size: 12px; color: #777;">La poltrona sacco è una seduta morbida e informale, riempita con palline di polistirolo, che si adatta al corpo. Icona del design anni '60 (come la Sacco chair), rappresenta comfort, libertà e rottura delle forme tradizionali.</p>
-                
-                <div class="tags-container">
-                    <span class="tag tag-orange">icon design</span>
-                    <span class="tag tag-red">shape-adaptive</span>
-                    <span class="tag tag-blue">lightweight</span>
-                    <span class="tag tag-green">soft seating</span>
-                </div>
-            </div>
-            
-            <div id="tab-3d" class="tab-content">
-                <p class="description" style="text-align:center; margin-top:20px;">Visualizzazione 3D non disponibile nell'anteprima.</p>
             </div>
         </div>
 
         <div class="tab-bar">
-            <div class="tab-item">
-                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-                <span class="tab-label">Home</span>
-            </div>
-            <div class="tab-item active-tab">
-                <svg viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
-                <span class="tab-label">Archivio</span>
-            </div>
-            <div class="tab-item">
-                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                <span class="tab-label">Profilo</span>
-            </div>
-            <div class="tab-item">
-                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                <span class="tab-label">Settings</span>
-            </div>
+            <div class="tab-item"><svg viewBox="0 0 24 24"><path d="M12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm7-4h-2.67l-1.83-2H9.5L7.67 7H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-7 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg><span class="tab-label">Cattura</span></div>
+            <div class="tab-item active-tab"><svg viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg><span class="tab-label">Archivio</span></div>
+            <div class="tab-item"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span class="tab-label">Profilo</span></div>
         </div>
     </div>
 
+    <div id="capture-popup">
+        <h3 style="margin-top:0;">Ottimo! 🛋️</h3>
+        <p style="font-size:14px; color:#666;">Hai catturato la sedia sacco!</p>
+        <button class="btn-red" onclick="closePopup()">OK</button>
+    </div>
+
     <script>
-        function openArchiveTab(evt, tabId) {
-            // Nascondi tutti i contenuti
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active-content'));
-            // Disattiva tutte le tab superiori
-            document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active-link'));
+        // Gestione Splash -> Login
+        setTimeout(() => {
+            document.getElementById('screen-splash').classList.remove('active');
+            document.getElementById('screen-login').classList.add('active');
+        }, 2000);
+
+        // Gestione Login -> Archivio (con popup veloce)
+        function doLogin() {
+            document.getElementById('screen-login').classList.remove('active');
+            document.getElementById('screen-archive').classList.add('active');
             
-            // Mostra il contenuto selezionato
+            // Popup quasi istantaneo appena entri
+            setTimeout(() => {
+                document.getElementById('global-overlay').style.display = 'block';
+                document.getElementById('capture-popup').style.display = 'block';
+            }, 400); 
+        }
+
+        function closePopup() {
+            document.getElementById('global-overlay').style.display = 'none';
+            document.getElementById('capture-popup').style.display = 'none';
+        }
+
+        function openArchiveTab(evt, tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active-content'));
+            document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active-link'));
             document.getElementById(tabId).classList.add('active-content');
-            // Attiva la tab cliccata
             evt.currentTarget.classList.add('active-link');
         }
     </script>
