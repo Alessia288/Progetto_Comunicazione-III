@@ -7,62 +7,84 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     
     <style>
-        :root { --primary-red: #a51d16; --ios-blue: #007AFF; --bg-gray: #f2f2f7; }
-        body, html { margin: 0; padding: 0; font-family: -apple-system, sans-serif; height: 100%; width: 100%; overflow: hidden; background: white; }
+        :root { 
+            --primary-red: #a51d16; 
+            --ios-blue: #007AFF; 
+            --bg-gray: #f2f2f7; 
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
 
-        /* SCHERMATE */
+        body, html { margin: 0; padding: 0; font-family: -apple-system, system-ui, sans-serif; height: 100%; width: 100%; overflow: hidden; background: white; }
+
+        /* SCHERMATE UNIVERSALI */
         .screen { display: none; height: 100vh; width: 100vw; position: absolute; top: 0; left: 0; flex-direction: column; box-sizing: border-box; }
         .active { display: flex; }
 
-        /* SPLASH SCREEN (Z-INDEX ALTISSIMO) */
-        #screen-splash { background: white; justify-content: center; align-items: center; z-index: 2000; }
-        #screen-splash h1 { color: var(--primary-red); font-size: 32px; margin-top: 20px; }
+        /* 1. SPLASH SCREEN */
+        #screen-splash { background: white; justify-content: center; align-items: center; z-index: 5000; }
+        #screen-splash h1 { color: var(--primary-red); font-size: 32px; margin-top: 15px; }
 
-        /* OVERLAY GRIGIO PER I MESSAGGI */
-        #global-overlay { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.4); z-index: 3000; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-        }
-
-        /* PROMPT IPHONE (Simulazione Installazione) */
+        /* OVERLAY E PROMPT STILE IPHONE (INSTALLA/ACCEDI) */
+        #global-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 6000; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+        
         #ios-install-prompt { 
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            width: 280px; background: rgba(255,255,255,0.95); border-radius: 14px; 
-            text-align: center; z-index: 4000; display: none; overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 270px; background: rgba(255,255,255,0.95); border-radius: 14px; 
+            text-align: center; z-index: 7000; display: none; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
         .prompt-text { padding: 20px; font-size: 17px; font-weight: 600; color: black; line-height: 1.3; }
         .prompt-buttons { display: flex; border-top: 0.5px solid #bbb; }
         .prompt-btn { flex: 1; padding: 12px; font-size: 17px; color: var(--ios-blue); cursor: pointer; border: none; background: transparent; }
         .prompt-btn:first-child { border-right: 0.5px solid #bbb; }
 
-        /* LOGIN */
+        /* 2. LOGIN */
         #screen-login { background: var(--primary-red); color: white; justify-content: center; align-items: center; text-align: center; }
-        .input-box { background: rgba(255,255,255,0.2); border: 1px solid white; border-radius: 12px; width: 260px; padding: 15px; margin: 10px auto; color: white; text-align: left; }
+        .input-box { background: rgba(255,255,255,0.2); border: 1px solid white; border-radius: 12px; width: 280px; padding: 15px; margin: 10px auto; color: white; text-align: left; }
 
-        /* CATTURA E HEADER */
+        /* 3. CATTURA E NAVIGAZIONE */
         .app-header { display: flex; align-items: center; padding: 45px 20px 15px; background: white; border-bottom: 0.5px solid #ccc; }
-        .back-arrow { color: var(--ios-blue); font-size: 18px; font-weight: 500; cursor: pointer; display: flex; align-items: center; }
-        model-viewer { width: 100%; height: 65%; }
-
-        /* TAB BAR */
-        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: rgba(255,255,255,0.9); display: flex; justify-content: space-around; padding-top: 10px; border-top: 0.5px solid #ccc; }
-        .tab-item { display: flex; flex-direction: column; align-items: center; color: #888; font-size: 11px; }
+        .back-arrow { color: var(--ios-blue); font-size: 18px; cursor: pointer; }
+        
+        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: rgba(255,255,255,0.9); display: flex; justify-content: space-around; border-top: 0.5px solid #ccc; z-index: 100; padding-top: 10px; }
+        .tab-item { display: flex; flex-direction: column; align-items: center; color: #888; font-size: 24px; cursor: pointer; }
         .tab-item.active-tab { color: var(--primary-red); }
 
-        /* ARCHIVIO */
-        #screen-archive { background: var(--bg-gray); }
-        .archive-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
-        .archive-item { background: white; border-radius: 15px; padding: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .archive-item img { width: 100%; border-radius: 10px; height: 100px; object-fit: contain; }
+        /* 4. ARCHIVIO (FIGMA STYLE) */
+        .archive-tabs { display: flex; background: white; border-bottom: 1px solid #ddd; }
+        .tab-link { flex: 1; text-align: center; padding: 15px 0; font-size: 14px; font-weight: 600; color: #888; cursor: pointer; position: relative; }
+        .tab-link.active-link { color: black; }
+        .tab-link.active-link::after { content:''; position: absolute; bottom: 0; left: 10%; width: 80%; height: 3px; background: var(--primary-red); border-radius: 10px; }
+
+        .tab-content { display: none; padding: 20px; overflow-y: auto; height: calc(100vh - 180px); background: white; }
+        .active-content { display: block; }
+
+        .archive-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .archive-item { background: white; border-radius: 15px; padding: 10px; text-align: center; box-shadow: var(--card-shadow); height: 110px; display: flex; flex-direction: column; align-items: center; border: 1px solid #f0f0f0; }
+        .archive-item img { max-width: 90%; height: 70px; object-fit: contain; }
+        .archive-item.locked { display: none !important; }
+        .archive-item.empty { opacity: 0.4; filter: grayscale(1); }
+        .status-tag { color: var(--primary-red); font-size: 9px; font-weight: bold; margin-top: 5px; }
+
+        /* INFO & STATO LAYOUT */
+        .info-main-img { height: 160px; object-fit: contain; margin: 0 auto 15px; display: block; }
+        .info-title { text-align: center; font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+        .info-details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .detail-item { background: #f9f9f9; border: 1px solid #eee; border-radius: 10px; padding: 12px; font-size: 12px; }
+        
+        .stat-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 13px; }
+        .bar-bg { flex-grow: 1; height: 6px; background: #eee; border-radius: 10px; margin: 0 10px; position: relative; }
+        .bar-fill { height: 100%; background: black; border-radius: 10px; }
+
+        .tag-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 20px; }
+        .tag { border: 1px solid; border-radius: 20px; padding: 5px 12px; font-size: 11px; font-weight: 600; }
 
         /* BOTTONI */
-        .btn { border-radius: 50px; border: none; padding: 16px 30px; font-weight: bold; width: 260px; font-size: 16px; margin: 20px auto; }
+        .btn { border-radius: 50px; border: none; padding: 16px 30px; font-weight: bold; width: 280px; font-size: 16px; margin: 10px auto; cursor: pointer; }
         .btn-white { background: white; color: var(--primary-red); }
         .btn-red { background: var(--primary-red); color: white; }
 
-        /* POPUP CATTURA */
-        #capture-popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; background: white; border-radius: 20px; padding: 25px; text-align: center; z-index: 5000; }
+        /* POPUP CATTURA SUCCESSFUL */
+        #capture-popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; background: white; border-radius: 20px; padding: 25px; text-align: center; z-index: 8000; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
@@ -97,43 +119,86 @@
             <button slot="ar-button" id="ar-trigger" class="btn btn-red" style="position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%); white-space: nowrap;">Apri Camera e Cattura</button>
         </model-viewer>
         <div class="tab-bar">
-            <div class="tab-item active-tab"><span>📷</span><span>Cattura</span></div>
-            <div class="tab-item" onclick="changeScreen('screen-archive')"><span>📦</span><span>Archivio</span></div>
+            <div class="tab-item active-tab">📷</div>
+            <div class="tab-item" onclick="changeScreen('screen-archive')">📂</div>
+            <div class="tab-item">👤</div>
+            <div class="tab-item">⚙️</div>
         </div>
     </div>
 
     <div id="screen-archive" class="screen">
         <div class="app-header">
-            <div class="back-arrow" onclick="changeScreen('screen-capture')">〈 Back</div>
-            <div style="flex-grow:1; text-align:center; font-weight:600; margin-right:40px;">Archivio</div>
+            <div style="flex-grow:1; text-align:center; font-weight:600;">IL TUO ARCHIVIO</div>
         </div>
-        <div class="archive-grid">
-            <div id="item-sacco" class="archive-item" style="display: none;">
-                <img src="sacco.png">
-                <p style="font-weight: bold; margin: 5px 0; font-size: 14px;">Sedia Sacco</p>
-                <span style="color: var(--primary-red); font-size: 11px; font-weight: bold;">CATTURATO</span>
+        
+        <div class="archive-tabs">
+            <div class="tab-link active-link" onclick="openArchiveTab(event, 'tab-3d')">3D</div>
+            <div class="tab-link" onclick="openArchiveTab(event, 'tab-info')">Info</div>
+            <div class="tab-link" onclick="openArchiveTab(event, 'tab-stato')">Stato</div>
+        </div>
+
+        <div id="tab-3d" class="tab-content active-content">
+            <div class="archive-grid">
+                <div id="card-sacco" class="archive-item locked">
+                    <img src="sacco.png">
+                    <span class="status-tag">CATTURATO</span>
+                </div>
+                <div id="placeholder-sacco" class="archive-item empty">
+                    <div style="font-size:24px; color:#ccc; margin-top:15px;">?</div>
+                    <span style="font-size:10px; color:#aaa; margin-top:10px;">DA SCOPRIRE</span>
+                </div>
+                <div class="archive-item empty"><div style="font-size:24px; color:#ccc; margin-top:15px;">?</div></div>
+                <div class="archive-item empty"><div style="font-size:24px; color:#ccc; margin-top:15px;">?</div></div>
             </div>
         </div>
+
+        <div id="tab-info" class="tab-content">
+            <img src="sacco.png" class="info-main-img">
+            <h3 class="info-title">POLTRONA SACCO</h3>
+            <p style="font-size:14px; color:#444; line-height:1.4; margin-bottom:20px;">La poltrona sacco non si limita ad accogliere il corpo: lo segue, lo avvolge e ridefinisce il modo stesso di abitare lo spazio.</p>
+            <div class="info-details-grid">
+                <div class="detail-item"><strong>⚖️ Peso:</strong> 10 kg</div>
+                <div class="detail-item"><strong>📏 Taglia:</strong> 80x80x68 cm</div>
+                <div class="detail-item"><strong>🪑 Cat:</strong> Seduta</div>
+                <div class="detail-item"><strong>🎨 Design:</strong> Zanotta</div>
+            </div>
+        </div>
+
+        <div id="tab-stato" class="tab-content">
+            <img src="sacco.png" class="info-main-img">
+            <h3 class="info-title">STATISTICHE OGGETTO</h3>
+            <div class="stat-row"><span>Comfort</span><div class="bar-bg"><div class="bar-fill" style="width:92%"></div></div><span>92</span></div>
+            <div class="stat-row"><span>Flessibilità</span><div class="bar-bg"><div class="bar-fill" style="width:88%"></div></div><span>88</span></div>
+            <div class="stat-row"><span>Iconicità</span><div class="bar-bg"><div class="bar-fill" style="width:97%"></div></div><span>97</span></div>
+            <div class="tag-container">
+                <span class="tag" style="color:orange; border-color:orange;">icon design</span>
+                <span class="tag" style="color:red; border-color:red;">shape-adaptive</span>
+                <span class="tag" style="color:blue; border-color:blue;">lightweight</span>
+            </div>
+        </div>
+
         <div class="tab-bar">
-            <div class="tab-item" onclick="changeScreen('screen-capture')"><span>📷</span><span>Cattura</span></div>
-            <div class="tab-item active-tab"><span>📦</span><span>Archivio</span></div>
+            <div class="tab-item" onclick="changeScreen('screen-capture')">📷</div>
+            <div class="tab-item active-tab">📂</div>
+            <div class="tab-item">👤</div>
+            <div class="tab-item">⚙️</div>
         </div>
     </div>
 
     <div id="capture-popup">
-        <h3 style="margin-top: 0;">Ottimo! 🛋️</h3>
-        <p style="font-size: 14px; color: #444;">Hai catturato la sedia sacco, ora la puoi vedere nel tuo archivio.</p>
-        <button class="btn btn-red" style="width: 100%; margin: 10px 0 0 0;" onclick="closePopup()">OK</button>
+        <h3 style="margin-top:0;">Ottimo! 🛋️</h3>
+        <p style="font-size:14px; color:#666;">Hai catturato la sedia sacco, ora la puoi vedere nel tuo archivio.</p>
+        <button class="btn btn-red" style="width:100%;" onclick="closePopup()">OK</button>
     </div>
 
     <script>
         let arStarted = false;
 
-        // Gestione Splash -> Prompt
+        // 1. Splash -> Prompt
         setTimeout(() => {
             document.getElementById('global-overlay').style.display = 'block';
             document.getElementById('ios-install-prompt').style.display = 'block';
-        }, 2000);
+        }, 2500);
 
         function goLogin() {
             document.getElementById('global-overlay').style.display = 'none';
@@ -147,6 +212,14 @@
             document.getElementById(id).classList.add('active');
         }
 
+        function openArchiveTab(evt, tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active-content'));
+            document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active-link'));
+            document.getElementById(tabId).classList.add('active-content');
+            evt.currentTarget.classList.add('active-link');
+        }
+
+        // 2. Rilevamento AR
         document.getElementById('ar-trigger').addEventListener('click', () => { arStarted = true; });
 
         window.addEventListener('focus', () => {
@@ -154,15 +227,19 @@
                 setTimeout(() => {
                     document.getElementById('global-overlay').style.display = 'block';
                     document.getElementById('capture-popup').style.display = 'block';
-                    document.getElementById('item-sacco').style.display = 'block';
                     arStarted = false;
                 }, 1000);
             }
         });
 
+        // 3. Sblocco Archivio al clic su OK
         function closePopup() {
             document.getElementById('global-overlay').style.display = 'none';
             document.getElementById('capture-popup').style.display = 'none';
+            
+            // Sblocca la card
+            document.getElementById('placeholder-sacco').style.display = 'none';
+            document.getElementById('card-sacco').classList.remove('locked');
         }
     </script>
 </body>
