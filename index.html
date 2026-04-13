@@ -16,9 +16,13 @@
 
         body, html { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; height: 100%; width: 100%; overflow: hidden; background: white; }
 
-        .screen { display: none; height: 100vh; width: 100vw; position: absolute; top: 0; left: 0; flex-direction: column; box-sizing: border-box; }
+        /* --- SCHERMATE --- */
+        .screen { display: none; height: 100vh; width: 100vw; position: absolute; top: 0; left: 0; flex-direction: column; align-items: center; box-sizing: border-box; }
         .active { display: flex; }
 
+        /* 1. SPLASH SCREEN */
+        #screen-splash { background: white; justify-content: center; z-index: 5000; }
+        #screen-splash h1 { color: var(--primary-red); font-size: 32px; font-weight: 800; }
         /* SPLASH & OVERLAYS */
         #screen-splash { background: white; justify-content: center; align-items: center; z-index: 5000; }
         #global-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 6000; backdrop-filter: blur(5px); }
