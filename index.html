@@ -94,10 +94,13 @@
         <button class="btn-red" style="background:white; color:var(--primary-red);" onclick="changeScreen('screen-capture')">Accedi</button>
     </div>
 
-    <div id="screen-capture" class="screen">
-        <div style="padding: 50px 0 10px; text-align: center; font-weight: 700;">CATTURA</div>
-        <model-viewer id="viewer" src="poltrona_sacco.glb" ar ar-modes="quick-look webxr" camera-controls scale="0.1 0.1 0.1" style="width:100%; height:65vh;">
-            <button slot="ar-button" class="btn-red" id="ar-trigger" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">Apri Camera</button>
+ <div id="screen-capture" class="screen">
+        <div class="app-header">
+            <div class="back-arrow" onclick="changeScreen('screen-login')">〈 Back</div>
+            <div style="font-weight:600;">Cattura</div>
+        </div>
+        <model-viewer id="viewer" src="poltrona_sacco.glb" ios-src="POLTRONA_SACCO.usdz" ar ar-modes="quick-look webxr" camera-controls shadow-intensity="1">
+            <button slot="ar-button" id="ar-trigger" class="btn btn-red" style="position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%);">Apri Camera e Cattura</button>
         </model-viewer>
         
         <div class="tab-bar">
