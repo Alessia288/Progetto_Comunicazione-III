@@ -9,9 +9,8 @@
     <style>
         :root { 
             --primary-red: #a51d16; 
-            --ios-blue: #007AFF; 
-            --bg-gray: #f2f2f7; 
-            --tab-gray: #8E8E93;
+            --ios-gray: #8E8E93; /* Il grigio esatto delle tue foto */
+            --bg-light: #F2F2F7;
         }
 
         body, html { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; height: 100%; width: 100%; overflow: hidden; background: white; }
@@ -24,34 +23,30 @@
         #screen-splash { background: white; justify-content: center; z-index: 5000; }
         #screen-splash h1 { color: var(--primary-red); font-size: 32px; margin-top: 15px; }
 
-        /* OVERLAYS E PROMPT */
+        /* OVERLAYS */
         #global-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 6000; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
-        
-        #ios-install-prompt, #capture-popup { 
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            width: 270px; background: rgba(255,255,255,0.95); border-radius: 14px; text-align: center; z-index: 7000; display: none; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
+        #ios-install-prompt, #capture-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 270px; background: rgba(255,255,255,0.95); border-radius: 14px; text-align: center; z-index: 7000; display: none; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
 
         /* 2. LOGIN */
         #screen-login { background: var(--primary-red); color: white; justify-content: center; }
-        .input-box { background: rgba(255,255,255,0.2); border: 1px solid white; border-radius: 12px; width: 280px; padding: 15px; margin: 10px 0; color: white; text-align: left; }
+        .input-box { background: rgba(255,255,255,0.2); border: 1px solid white; border-radius: 12px; width: 280px; padding: 15px; margin: 10px 0; color: white; }
 
         /* HEADER */
         .app-header { width: 100%; display: flex; align-items: center; padding: 50px 0 15px; background: white; border-bottom: 0.5px solid #ccc; justify-content: center; position: relative; }
-        .back-arrow { position: absolute; left: 20px; color: var(--ios-blue); font-size: 17px; cursor: pointer; text-decoration: none; }
+        .back-arrow { position: absolute; left: 20px; color: #007AFF; font-size: 17px; cursor: pointer; }
 
         /* 3. CATTURA */
-        #screen-capture model-viewer { width: 100%; height: 60vh; display: block; margin: 0 auto; }
+        model-viewer { width: 100%; height: 60vh; display: block; margin: 0 auto; }
 
-        /* NAVBAR IN BASSO (STILE FIGMA) */
-        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 85px; background: rgba(255,255,255,0.9); display: flex; justify-content: space-around; border-top: 0.5px solid #ccc; padding-top: 10px; z-index: 1000; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-        .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--tab-gray); width: 20%; cursor: pointer; text-decoration: none; }
+        /* NAVBAR IN BASSO (STILE SECONDA FOTO) */
+        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 85px; background: rgba(255,255,255,0.94); display: flex; justify-content: space-around; border-top: 0.5px solid #ccc; padding-top: 10px; z-index: 1000; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
+        .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); width: 22%; cursor: pointer; text-decoration: none; transition: color 0.2s; }
+        .tab-item svg { width: 28px; height: 28px; margin-bottom: 4px; fill: currentColor; }
         .tab-item.active-tab { color: var(--primary-red); }
-        .tab-icon { font-size: 24px; margin-bottom: 3px; }
-        .tab-label { font-size: 10px; font-weight: 500; text-transform: uppercase; }
+        .tab-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* 4. ARCHIVIO STILE FIGMA */
-        .archive-tabs { width: 100%; display: flex; border-bottom: 1px solid #ddd; background: white; }
+        .archive-tabs { width: 100%; display: flex; border-bottom: 1px solid #ddd; }
         .tab-link { flex: 1; text-align: center; padding: 15px 0; font-size: 14px; color: #888; font-weight: 600; cursor: pointer; position: relative; }
         .active-link { color: black; }
         .active-link::after { content:''; position: absolute; bottom: 0; left: 15%; width: 70%; height: 3px; background: var(--primary-red); border-radius: 10px; }
@@ -64,22 +59,17 @@
         .archive-item img { max-width: 100%; max-height: 65px; object-fit: contain; }
         .locked { display: none !important; }
 
-        /* DETTAGLI INFO & STATO */
-        .info-main-img { width: 180px; height: 180px; object-fit: contain; margin: 10px 0 20px; }
-        .info-title { font-size: 20px; font-weight: 800; margin-bottom: 15px; text-align: center; }
-        .info-details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
-        .detail-item { background: #f9f9f9; padding: 12px; border-radius: 10px; font-size: 12px; text-align: left; border: 1px solid #eee; }
-
-        .stat-row { width: 100%; display: flex; align-items: center; margin-bottom: 12px; font-size: 13px; color: #333; }
+        /* INFO & STATO */
+        .info-main-img { width: 180px; height: 180px; object-fit: contain; margin-bottom: 20px; }
+        .info-title { font-size: 20px; font-weight: 800; margin-bottom: 15px; }
+        .stat-row { width: 100%; display: flex; align-items: center; margin-bottom: 12px; font-size: 13px; }
         .bar-bg { flex-grow: 1; height: 8px; background: #eee; border-radius: 10px; margin: 0 12px; }
         .bar-fill { height: 100%; background: black; border-radius: 10px; }
 
         /* BOTTONI */
-        .btn { border-radius: 50px; border: none; padding: 16px; font-weight: bold; width: 280px; font-size: 16px; margin: 15px 0; cursor: pointer; transition: 0.2s; }
+        .btn { border-radius: 50px; border: none; padding: 16px; font-weight: bold; width: 280px; font-size: 16px; margin: 15px 0; cursor: pointer; }
         .btn-white { background: white; color: var(--primary-red); }
         .btn-red { background: var(--primary-red); color: white; }
-        .prompt-btn { flex: 1; padding: 12px; color: var(--ios-blue); cursor: pointer; border: none; background: transparent; font-size: 17px; border-top: 0.5px solid #bbb; }
-        .prompt-btn:first-child { border-right: 0.5px solid #bbb; }
     </style>
 </head>
 <body>
@@ -92,15 +82,15 @@
     <div id="global-overlay"></div>
     
     <div id="ios-install-prompt">
-        <div style="padding: 22px; font-weight: 600; font-size: 17px; line-height: 1.3;">Installa Design Hunt o se l'hai già installata accedi</div>
-        <div style="display: flex;">
-            <button class="prompt-btn" onclick="window.location.href='https://apps.apple.com'">Installa</button>
-            <button class="prompt-btn" style="font-weight: bold;" onclick="goLogin()">Accedi</button>
+        <div style="padding: 22px; font-weight: 600;">Installa Design Hunt o se l'hai già installata accedi</div>
+        <div style="display: flex; border-top: 0.5px solid #bbb;">
+            <div style="flex:1; padding:12px; color:#007AFF; border-right:0.5px solid #bbb;" onclick="window.location.href='#'">Installa</div>
+            <div style="flex:1; padding:12px; color:#007AFF; font-weight:bold;" onclick="goLogin()">Accedi</div>
         </div>
     </div>
 
     <div id="screen-login" class="screen">
-        <h1 style="font-size: 32px; margin-bottom: 20px;">Accedi</h1>
+        <h1>Accedi</h1>
         <div class="input-box">eleonora.rossi@example.com</div>
         <div class="input-box">••••••••</div>
         <button class="btn btn-white" onclick="changeScreen('screen-capture')">Accedi</button>
@@ -112,18 +102,26 @@
             <div style="font-weight:700;">CATTURA</div>
         </div>
         <model-viewer id="viewer" src="poltrona_sacco.glb" ios-src="POLTRONA_SACCO.usdz" ar ar-modes="quick-look webxr" camera-controls shadow-intensity="1">
-            <button slot="ar-button" id="ar-trigger" class="btn btn-red" style="position: absolute; bottom: 110px; left: 50%; transform: translateX(-50%); white-space: nowrap;">Apri Camera e Cattura</button>
+            <button slot="ar-button" id="ar-trigger" class="btn btn-red" style="position: absolute; bottom: 110px; left: 50%; transform: translateX(-50%);">Apri Camera e Cattura</button>
         </model-viewer>
         
         <div class="tab-bar">
             <div class="tab-item active-tab" onclick="changeScreen('screen-capture')">
-                <span class="tab-icon">📷</span><span class="tab-label">Cattura</span>
+                <svg viewBox="0 0 24 24"><path d="M12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm7-4h-2.67l-1.83-2H9.5L7.67 7H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-7 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+                <span class="tab-label">Cattura</span>
             </div>
             <div class="tab-item" onclick="changeScreen('screen-archive')">
-                <span class="tab-icon">📂</span><span class="tab-label">Archivio</span>
+                <svg viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                <span class="tab-label">Archivio</span>
             </div>
-            <div class="tab-item"><span class="tab-icon">👤</span><span class="tab-label">Profilo</span></div>
-            <div class="tab-item"><span class="tab-icon">⚙️</span><span class="tab-label">Impostazioni</span></div>
+            <div class="tab-item">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <span class="tab-label">Profilo</span>
+            </div>
+            <div class="tab-item">
+                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                <span class="tab-label">Settings</span>
+            </div>
         </div>
     </div>
 
@@ -132,9 +130,9 @@
             <div style="font-weight:700;">IL TUO ARCHIVIO</div>
         </div>
         <div class="archive-tabs">
-            <div id="l-3d" class="tab-link active-link" onclick="openArchiveTab(event, 'tab-3d')">3D</div>
-            <div id="l-info" class="tab-link" onclick="openArchiveTab(event, 'tab-info')">Info</div>
-            <div id="l-stato" class="tab-link" onclick="openArchiveTab(event, 'tab-stato')">Stato</div>
+            <div class="tab-link active-link" onclick="openArchiveTab(event, 'tab-3d')">3D</div>
+            <div class="tab-link" onclick="openArchiveTab(event, 'tab-info')">Info</div>
+            <div class="tab-link" onclick="openArchiveTab(event, 'tab-stato')">Stato</div>
         </div>
 
         <div id="tab-3d" class="tab-content active-content">
@@ -143,59 +141,52 @@
                 <div id="placeholder-sacco" class="archive-item" style="opacity:0.3; border: 1px dashed #ccc;">?</div>
                 <div class="archive-item" style="opacity:0.3;">?</div>
                 <div class="archive-item" style="opacity:0.3;">?</div>
-                <div class="archive-item" style="opacity:0.3;">?</div>
-                <div class="archive-item" style="opacity:0.3;">?</div>
             </div>
         </div>
 
         <div id="tab-info" class="tab-content">
             <img src="sacco.png" class="info-main-img">
             <div class="info-title">POLTRONA SACCO</div>
-            <p style="font-size:14px; text-align:left; color:#444; line-height:1.5; padding: 0 10px;">La poltrona sacco non si limita ad accogliere il corpo: lo segue, lo avvolge e ridefinisce il modo stesso di abitare lo spazio.</p>
-            <div class="info-details-grid">
-                <div class="detail-item"><strong>⚖️ Peso</strong><br>10 kg</div>
-                <div class="detail-item"><strong>📏 Taglia</strong><br>80x80x68 cm</div>
-                <div class="detail-item"><strong>🪑 Categoria</strong><br>Seduta</div>
-                <div class="detail-item"><strong>🎨 Design</strong><br>Zanotta</div>
-            </div>
+            <p style="font-size:14px; color:#444; text-align:left;">La poltrona sacco segue il corpo e lo avvolge.</p>
         </div>
 
         <div id="tab-stato" class="tab-content">
             <img src="sacco.png" class="info-main-img">
-            <div class="info-title">STATISTICHE</div>
+            <div class="info-title">STATO</div>
             <div class="stat-row"><span>Comfort</span><div class="bar-bg"><div class="bar-fill" style="width:92%"></div></div><span>92</span></div>
             <div class="stat-row"><span>Flessibilità</span><div class="bar-bg"><div class="bar-fill" style="width:88%"></div></div><span>88</span></div>
-            <div class="stat-row"><span>Iconicità</span><div class="bar-bg"><div class="bar-fill" style="width:97%"></div></div><span>97</span></div>
-            <div style="display:flex; gap:8px; margin-top:15px;">
-                <span style="border:1px solid orange; color:orange; padding:4px 10px; border-radius:20px; font-size:11px;">icon design</span>
-                <span style="border:1px solid red; color:red; padding:4px 10px; border-radius:20px; font-size:11px;">shape-adaptive</span>
-            </div>
         </div>
 
         <div class="tab-bar">
             <div class="tab-item" onclick="changeScreen('screen-capture')">
-                <span class="tab-icon">📷</span><span class="tab-label">Cattura</span>
+                <svg viewBox="0 0 24 24"><path d="M12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm7-4h-2.67l-1.83-2H9.5L7.67 7H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-7 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+                <span class="tab-label">Cattura</span>
             </div>
             <div class="tab-item active-tab" onclick="changeScreen('screen-archive')">
-                <span class="tab-icon">📂</span><span class="tab-label">Archivio</span>
+                <svg viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                <span class="tab-label">Archivio</span>
             </div>
-            <div class="tab-item"><span class="tab-icon">👤</span><span class="tab-label">Profilo</span></div>
-            <div class="tab-item"><span class="tab-icon">⚙️</span><span class="tab-label">Impostazioni</span></div>
+            <div class="tab-item">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <span class="tab-label">Profilo</span>
+            </div>
+            <div class="tab-item">
+                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                <span class="tab-label">Settings</span>
+            </div>
         </div>
     </div>
 
     <div id="capture-popup">
         <div style="padding: 25px;">
-            <h3 style="margin: 0 0 10px 0;">Ottimo! 🛋️</h3>
-            <p style="font-size:15px; color:#666; line-height:1.4;">Hai catturato la sedia sacco, ora la puoi vedere nel tuo archivio.</p>
-            <button class="btn btn-red" style="width:100%; margin-bottom:0;" onclick="closePopup()">OK</button>
+            <h3 style="margin-top:0;">Ottimo! 🛋️</h3>
+            <p style="font-size:15px; color:#666;">Hai catturato la sedia sacco!</p>
+            <button class="btn btn-red" style="width:100%;" onclick="closePopup()">OK</button>
         </div>
     </div>
 
     <script>
         let arStarted = false;
-
-        // Gestione Sequenza Iniziale
         setTimeout(() => {
             document.getElementById('global-overlay').style.display = 'block';
             document.getElementById('ios-install-prompt').style.display = 'block';
@@ -211,16 +202,6 @@
         function changeScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            
-            // Aggiorna icone attive nella navbar
-            document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active-tab'));
-            if(id === 'screen-capture') {
-                document.querySelectorAll('.tab-item')[0].classList.add('active-tab');
-                document.querySelectorAll('.tab-item')[4].classList.add('active-tab');
-            } else if(id === 'screen-archive') {
-                document.querySelectorAll('.tab-item')[1].classList.add('active-tab');
-                document.querySelectorAll('.tab-item')[5].classList.add('active-tab');
-            }
         }
 
         function openArchiveTab(evt, tabId) {
@@ -245,12 +226,8 @@
         function closePopup() {
             document.getElementById('global-overlay').style.display = 'none';
             document.getElementById('capture-popup').style.display = 'none';
-            
-            // SBLOCCO: Nasconde il punto di domanda e mostra la poltrona vera
-            const placeholder = document.getElementById('placeholder-sacco');
-            const cardReal = document.getElementById('card-sacco');
-            if(placeholder) placeholder.style.display = 'none';
-            if(cardReal) cardReal.classList.remove('locked');
+            document.getElementById('placeholder-sacco').style.display = 'none';
+            document.getElementById('card-sacco').classList.remove('locked');
         }
     </script>
 </body>
