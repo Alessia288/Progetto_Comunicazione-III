@@ -16,13 +16,9 @@
 
         body, html { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; height: 100%; width: 100%; overflow: hidden; background: white; }
 
-        /* --- SCHERMATE --- */
-        .screen { display: none; height: 100vh; width: 100vw; position: absolute; top: 0; left: 0; flex-direction: column; align-items: center; box-sizing: border-box; }
+        .screen { display: none; height: 100vh; width: 100vw; position: absolute; top: 0; left: 0; flex-direction: column; box-sizing: border-box; }
         .active { display: flex; }
 
-        /* 1. SPLASH SCREEN */
-        #screen-splash { background: white; justify-content: center; z-index: 5000; }
-        #screen-splash h1 { color: var(--primary-red); font-size: 32px; font-weight: 800; }
         /* SPLASH & OVERLAYS */
         #screen-splash { background: white; justify-content: center; align-items: center; z-index: 5000; }
         #global-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 6000; backdrop-filter: blur(5px); }
@@ -64,7 +60,7 @@
         .tags-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 25px; justify-content: center; }
         .tag { padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1.5px solid; }
 
-        /* NAVBAR (STILE FIGMA) */
+       /* NAVBAR (STILE FIGMA) */
 .tab-bar { 
     position: fixed; 
     bottom: 0; 
@@ -127,16 +123,13 @@
         <button class="btn-red" style="background:white; color:var(--primary-red);" onclick="changeScreen('screen-capture')">Accedi</button>
     </div>
 
- <div id="screen-capture" class="screen">
-        <div class="app-header">
-            <div class="back-arrow" onclick="changeScreen('screen-login')">〈 Back</div>
-            <div style="font-weight:600;">Cattura</div>
-        </div>
-        <model-viewer id="viewer" src="poltrona_sacco.glb" ios-src="POLTRONA_SACCO.usdz" ar ar-modes="quick-look webxr" camera-controls shadow-intensity="1">
-            <button slot="ar-button" id="ar-trigger" class="btn btn-red" style="position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%);">Apri Camera e Cattura</button>
+    <div id="screen-capture" class="screen">
+        <div style="padding: 50px 0 10px; text-align: center; font-weight: 700;">CATTURA</div>
+        <model-viewer id="viewer" src="poltrona_sacco.glb" ar ar-modes="quick-look webxr" camera-controls scale="0.1 0.1 0.1" style="width:100%; height:65vh;">
+            <button slot="ar-button" class="btn-red" id="ar-trigger" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">Apri Camera</button>
         </model-viewer>
         
-        <div class="tab-bar">
+       <div class="tab-bar">
     <div class="tab-item" onclick="changeScreen('screen-capture')">
         <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
     </div>
@@ -176,10 +169,10 @@
                 <div id="tab-info" class="tab-content">
                     <p style="line-height:1.6; color:#444; margin: 20px 0;">La poltrona sacco non si limita ad accogliere il corpo: lo segue, lo avvolge e ridefinisce il modo stesso di abitare lo spazio, eliminando la struttura rigida per dare vita a una seduta informale e rivoluzionaria.</p>
                     <div class="info-grid">
-                        <div class="info-box"><span style="font-size:10px; color:#888;">Peso</span><b>10 kg</b></div>
-                        <div class="info-box"><span style="font-size:10px; color:#888;">aglia</span><b>80x80x68 cm</b></div>
-                        <div class="info-box"><span style="font-size:10px; color:#888;">Categoria</span><b>Seduta</b></div>
-                        <div class="info-box"><span style="font-size:10px; color:#888;">Designer</span><b>Zanotta</b></div>
+                        <div class="info-box"><span style="font-size:10px; color:#888;">⚖️ Peso</span><b>10 kg</b></div>
+                        <div class="info-box"><span style="font-size:10px; color:#888;">📏 Taglia</span><b>80x80x68 cm</b></div>
+                        <div class="info-box"><span style="font-size:10px; color:#888;">🪑 Categoria</span><b>Seduta</b></div>
+                        <div class="info-box"><span style="font-size:10px; color:#888;">🔘 Designer</span><b>Zanotta</b></div>
                     </div>
                     <p style="line-height:1.6; color:#444; margin-top:20px;">Perfetta per ambienti contemporanei, è diventata un simbolo del relax globale.</p>
                 </div>
