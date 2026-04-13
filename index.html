@@ -9,142 +9,124 @@
     <style>
         :root { 
             --primary-red: #a51d16; 
-            --ios-gray-light: #C7C7CC; /* Il grigio chiaro degli screenshot */
-            --ios-gray-dark: #8E8E93;
-            --bg-ultra-light: #FBFBFB;
+            --ios-gray-light: #C7C7CC;
+            --ios-blue: #007AFF;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body, html { margin: 0; padding: 0; font-family: -apple-system, system-ui, sans-serif; height: 100%; background: white; overflow: hidden; }
 
-        /* MODALI / ALERT */
-        .ios-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 20000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
-        .ios-alert { width: 275px; background: rgba(255,255,255,0.9); border-radius: 14px; text-align: center; overflow: hidden; animation: zoom 0.2s ease-out; border: 0.5px solid rgba(0,0,0,0.1); }
+        /* OVERLAY E ALERT */
+        .ios-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 30000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+        .ios-alert { width: 270px; background: rgba(255,255,255,0.9); border-radius: 14px; text-align: center; overflow: hidden; animation: zoom 0.2s ease-out; }
         .alert-body { padding: 20px; font-size: 14px; color: black; line-height: 1.4; }
         .alert-footer { display: flex; border-top: 0.5px solid #bbb; }
-        .alert-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #007AFF; font-size: 17px; cursor: pointer; }
-        .btn-bold { font-weight: 600; border-left: 0.5px solid #bbb; }
+        .alert-btn { flex: 1; padding: 12px; border: none; background: transparent; color: var(--ios-blue); font-size: 17px; cursor: pointer; }
+        @keyframes zoom { from { transform: scale(1.1); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         /* SCHERMATE */
         .screen { display: none; height: 100vh; width: 100vw; position: absolute; top: 0; left: 0; flex-direction: column; }
         .active { display: flex; }
 
-        /* LOGIN (FOTO 1) */
-        #screen-login { background: var(--primary-red); color: white; padding: 40px 30px; justify-content: space-between; align-items: center; }
-        .login-top { text-align: center; margin-top: 40px; }
-        .login-top h1 { font-size: 38px; font-weight: 700; margin: 10px 0 0; letter-spacing: -1px; }
-        .input-container { width: 100%; max-width: 320px; }
-        .input-box { background: rgba(255,255,255,0.2); border-radius: 12px; margin-bottom: 12px; padding: 16px; display: flex; align-items: center; gap: 10px; }
-        .input-box input { background: transparent; border: none; color: white; flex: 1; outline: none; font-size: 16px; }
-        .input-box input::placeholder { color: rgba(255,255,255,0.6); }
-        .input-box svg { width: 20px; height: 20px; fill: rgba(255,255,255,0.7); }
-        .btn-prossimo { background: black; color: white; width: 100%; border-radius: 50px; padding: 18px; font-size: 18px; font-weight: 600; border: none; margin-bottom: 30px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        /* 1. SPLASH SCREEN (INIZIO VIDEO) */
+        #screen-splash { background: white; justify-content: center; align-items: center; text-align: center; }
+        .splash-logo { width: 120px; margin-bottom: 20px; }
 
-        /* ARCHIVIO GRIGLIA (FOTO 2) */
-        .archive-header { text-align: center; padding-top: 60px; font-weight: 800; font-size: 22px; letter-spacing: 0.5px; }
-        .archive-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 15px; overflow-y: auto; flex: 1; margin-top: 20px; padding-bottom: 100px; }
-        .grid-card { background: white; border-radius: 12px; padding: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 0.5px solid #eee; }
-        .grid-card img { width: 100%; height: 70px; object-fit: contain; }
-        .grid-card span { color: var(--primary-red); font-size: 8px; font-weight: 800; display: block; margin-top: 5px; }
+        /* 2. LOGIN (FOTO 1) */
+        #screen-login { background: var(--primary-red); color: white; padding: 40px 30px; justify-content: center; align-items: center; }
+        .login-box { width: 100%; max-width: 320px; text-align: center; }
+        .input-group { background: rgba(255,255,255,0.2); border-radius: 12px; margin-bottom: 12px; padding: 16px; display: flex; align-items: center; }
+        .input-group input { background: transparent; border: none; color: white; flex: 1; outline: none; font-size: 16px; }
+        .btn-prossimo { background: black; color: white; width: 100%; border-radius: 50px; padding: 18px; font-size: 18px; font-weight: 600; border: none; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px; }
 
-        /* TAB BAR (LA BARRA IN FONDO - IDENTICA AGLI SCREEN) */
-        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 85px; background: var(--bg-ultra-light); display: flex; justify-content: space-around; align-items: center; border-top: 0.5px solid #dcdcdc; padding-bottom: 25px; z-index: 1000; }
-        .tab-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .tab-item svg { width: 30px; height: 30px; fill: none; stroke: var(--ios-gray-light); stroke-width: 1.5; } /* Tratto sottile */
-        .tab-item.active-tab svg { stroke: var(--primary-red); fill: var(--primary-red); } /* Cartella piena rossa */
-        .tab-item.active-tab.not-filled svg { fill: none; stroke: var(--primary-red); }
+        /* 3. ARCHIVIO GRIGLIA (FOTO 2) */
+        .archive-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; overflow-y: auto; flex: 1; margin-top: 60px; padding-bottom: 100px; }
+        .grid-card { background: white; border-radius: 15px; padding: 15px; text-align: center; border: 0.5px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .grid-card img { width: 100%; height: 80px; object-fit: contain; }
+        .grid-card span { color: var(--primary-red); font-size: 9px; font-weight: 800; display: block; margin-top: 8px; }
 
-        /* DETTAGLIO (FOTO 3) */
-        .detail-header-red { position: absolute; top: 0; width: 100%; height: 180px; background: linear-gradient(180deg, var(--primary-red) 0%, rgba(165,29,22,0.7) 100%); }
-        .detail-card { margin-top: 130px; background: white; border-radius: 40px 40px 0 0; flex: 1; z-index: 5; padding: 0 25px; position: relative; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
-        .product-img-large { width: 220px; margin: -110px auto 10px; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.15)); }
+        /* 4. DETTAGLIO (FOTO 3 E FINALE VIDEO) */
+        .detail-header-red { position: absolute; top: 0; width: 100%; height: 160px; background: linear-gradient(180deg, var(--primary-red) 0%, rgba(165,29,22,0.8) 100%); }
+        .detail-card { margin-top: 110px; background: white; border-radius: 40px 40px 0 0; flex: 1; z-index: 5; padding: 0 25px; position: relative; }
+        .product-img-large { width: 180px; margin: -90px auto 10px; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.15)); }
+        
+        /* TAB INTERNE STATO/INFO */
+        .sub-tabs { display: flex; border-bottom: 1px solid #eee; margin-bottom: 20px; }
+        .sub-tab { flex: 1; text-align: center; padding: 12px; color: #aaa; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .sub-tab.active { color: black; border-bottom: 3px solid var(--primary-red); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
-        @keyframes zoom { from { transform: scale(1.1); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        /* BARRE STATO (FOTO 4) */
+        .stat-row { display: flex; align-items: center; margin-bottom: 8px; font-size: 13px; }
+        .stat-label { width: 80px; color: #666; }
+        .stat-bar-bg { flex: 1; height: 6px; background: #eee; border-radius: 3px; margin: 0 10px; position: relative; }
+        .stat-bar-fill { height: 100%; background: black; border-radius: 3px; }
+
+        /* TAB BAR INFERIORE */
+        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 85px; background: #F9F9F9; display: flex; justify-content: space-around; align-items: center; border-top: 0.5px solid #ddd; padding-bottom: 25px; }
+        .tab-item svg { width: 28px; height: 28px; fill: none; stroke: var(--ios-gray-light); stroke-width: 1.5; }
+        .tab-item.active-tab svg { stroke: var(--primary-red); fill: var(--primary-red); }
     </style>
 </head>
 <body>
 
     <div id="modal-appstore" class="ios-overlay" style="display: flex;">
         <div class="ios-alert">
-            <div class="alert-body">
-                <b>Scarica l'app</b><br><br>
-                Scarica l'app da App Store o se già la possiedi accedi.
-            </div>
+            <div class="alert-body"><b>Scarica l'app</b><br><br>Scarica l'app da App Store o se già la possiedi accedi.</div>
             <div class="alert-footer">
-                <button class="alert-btn" onclick="alert('Link App Store...')">Vai App Store</button>
-                <button class="alert-btn btn-bold" onclick="closeAppStore()">Accedi</button>
+                <button class="alert-btn" onclick="alert('Redirect...')">App Store</button>
+                <button class="alert-btn" style="font-weight:600;" onclick="closeAppStore()">Accedi</button>
             </div>
         </div>
     </div>
 
-    <div id="modal-capture" class="ios-overlay">
+    <div id="modal-success" class="ios-overlay">
         <div class="ios-alert">
-            <div class="alert-body">
-                <b>Congratulazioni!</b><br><br>
-                Hai catturato la poltrona sacco!<br>La troverai nel tuo archivio.
-            </div>
+            <div class="alert-body"><b>Congratulazioni!</b><br><br>Hai catturato la poltrona sacco!<br>La troverai nel tuo archivio.</div>
             <div class="alert-footer">
-                <button class="alert-btn btn-bold" style="width:100%" onclick="goToArchive()">OK</button>
+                <button class="alert-btn" style="width:100%; font-weight:600;" onclick="goToArchive()">OK</button>
             </div>
         </div>
     </div>
 
-    <div id="screen-login" class="screen active">
-        <div class="login-top">
-            <img src="logo.png" style="width: 70px; filter: brightness(0) invert(1);">
-            <h1>Bentornato</h1>
-            <p style="opacity: 0.8; font-size: 14px;">accedi al tuo account</p>
-        </div>
-        <div class="input-container">
-            <div class="input-box">
-                <input type="email" placeholder="eleonora.rossi@exemole.com">
-                <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-            </div>
-            <div class="input-box">
-                <input type="password" placeholder="••••••••••••••">
-                <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6z"/></svg>
-            </div>
-            <div style="display:flex; justify-content:space-between; font-size:11px; margin: 5px 0 25px; opacity: 0.9;">
-                <label><input type="checkbox" checked> Ricordami</label>
-                <span>Password dimenticata?</span>
-            </div>
-            <button class="btn-prossimo" onclick="changeScreen('screen-capture')">Prossimo <span style="font-size:24px; line-height:0;">›</span></button>
-            <p style="text-align:center; font-size: 13px;">Nuovo account? <b>Registrati Ora</b></p>
+    <div id="screen-splash" class="screen active">
+        <img src="logo.png" class="splash-logo">
+        <h2 style="font-weight: 800; letter-spacing: -1px;">Design Hunt</h2>
+        <button onclick="changeScreen('screen-login')" style="background: var(--primary-red); color:white; border:none; padding:12px 40px; border-radius:20px; margin-top:40px; font-weight:bold;">Inizia</button>
+    </div>
+
+    <div id="screen-login" class="screen">
+        <div class="login-box">
+            <img src="logo.png" style="width: 60px; filter: brightness(0) invert(1); margin-bottom: 10px;">
+            <h1 style="margin:0;">Bentornato</h1>
+            <p style="opacity:0.8; margin-bottom:30px;">accedi al tuo account</p>
+            <div class="input-group"><input type="email" placeholder="eleonora.rossi@exemole.com"> ✉️</div>
+            <div class="input-group"><input type="password" placeholder="••••••••••••••"> 🔒</div>
+            <button class="btn-prossimo" onclick="changeScreen('screen-capture')">Prossimo ›</button>
         </div>
     </div>
 
     <div id="screen-capture" class="screen">
-        <model-viewer id="viewer" src="poltrona_sacco.glb" ar ar-modes="quick-look webxr" camera-controls style="width:100%; height:100%;">
-            <button slot="ar-button" style="position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%); padding: 18px 40px; border-radius: 40px; background: var(--primary-red); color: white; border: none; font-weight: bold; font-size: 16px;">AVVIA SCANSIONE</button>
+        <model-viewer id="viewer" src="poltrona_sacco.glb" ar ar-modes="webxr" camera-controls style="width:100%; height:100%;">
+            <button slot="ar-button" style="position:absolute; bottom:120px; left:50%; transform:translateX(-50%); background:var(--primary-red); color:white; border:none; padding:15px 30px; border-radius:30px; font-weight:bold;">AVVIA SCANSIONE</button>
         </model-viewer>
-        <button onclick="document.getElementById('modal-capture').style.display='flex'" style="position: absolute; top: 50px; right: 20px; background: white; border-radius: 50%; width: 45px; height: 45px; border: none; font-weight: bold; font-size: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">✕</button>
+        <button onclick="showCaptureSuccess()" style="position:absolute; top:50px; right:20px; background:white; width:40px; height:40px; border-radius:50%; border:none; font-weight:bold;">X</button>
     </div>
 
-    <div id="screen-archive-list" class="screen">
-        <div class="archive-header">IL TUO ARCHIVIO</div>
+    <div id="screen-archive" class="screen">
+        <h2 style="text-align:center; margin-top:60px;">IL TUO ARCHIVIO</h2>
         <div class="archive-grid">
             <div class="grid-card" onclick="changeScreen('screen-detail')">
                 <img src="sacco.png">
                 <span>CATTURATO</span>
             </div>
             <div class="grid-card" style="opacity:0.3;"><img src="sacco.png"><span>CATTURATO</span></div>
-            <div class="grid-card" style="opacity:0.3;"><img src="sacco.png"><span>CATTURATO</span></div>
-            <div class="grid-card" style="opacity:0.3;"><img src="sacco.png"><span>CATTURATO</span></div>
         </div>
-
         <nav class="tab-bar">
-            <div class="tab-item" onclick="changeScreen('screen-capture')">
-                <svg viewBox="0 0 24 24" style="stroke: var(--ios-gray-light);"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-            </div>
-            <div class="tab-item active-tab">
-                <svg viewBox="0 0 24 24" style="fill: var(--primary-red); stroke: var(--primary-red);"><path d="M22 19V9H12l-2-2H2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2z"/></svg>
-            </div>
-            <div class="tab-item">
-                <svg viewBox="0 0 24 24" style="stroke: var(--ios-gray-light);"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
-            </div>
-            <div class="tab-item">
-                <svg viewBox="0 0 24 24" style="stroke: var(--ios-gray-light);"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            </div>
+            <div class="tab-item" onclick="changeScreen('screen-capture')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+            <div class="tab-item active-tab"><svg viewBox="0 0 24 24"><path d="M22 19V9H12l-2-2H2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2z"/></svg></div>
+            <div class="tab-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg></div>
         </nav>
     </div>
 
@@ -152,37 +134,46 @@
         <div class="detail-header-red"></div>
         <div class="detail-card">
             <img src="sacco.png" class="product-img-large">
-            <h3 style="text-align:center; letter-spacing:1px; font-weight: 800; margin-bottom: 20px;">POLTRONA SACCO</h3>
+            <h3 style="text-align:center; margin:10px 0 20px;">POLTRONA SACCO</h3>
             
-            <div style="display:flex; border-bottom:1px solid #eee; margin-bottom: 25px;">
-                <div style="flex:1; text-align:center; padding:12px; color:#aaa; font-size:14px; font-weight:600;">3D</div>
-                <div style="flex:1; text-align:center; padding:12px; border-bottom:3px solid var(--primary-red); font-weight:bold; font-size:14px;">Info</div>
-                <div style="flex:1; text-align:center; padding:12px; color:#aaa; font-size:14px; font-weight:600;">Stato</div>
+            <div class="sub-tabs">
+                <div class="sub-tab" onclick="switchTab('3d')">3D</div>
+                <div class="sub-tab active" onclick="switchTab('info')">Info</div>
+                <div class="sub-tab" onclick="switchTab('stato')">Stato</div>
             </div>
 
-            <p style="text-align:center; font-size:15px; line-height:1.6; color:#444; margin-bottom: 30px;">
-                La poltrona sacco non si limita ad accogliere il corpo: lo segue, lo avvolge e ridefinisce il modo stesso di abitare lo spazio.
-            </p>
-            
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                <div style="border:1px solid #f0f0f0; padding:15px; border-radius:15px; background: #fff;">
-                    <small style="color:#aaa; font-weight:bold; font-size:10px; text-transform:uppercase;">⚖️ Peso</small><br>
-                    <b style="font-size:16px;">10 kg</b>
-                </div>
-                <div style="border:1px solid #f0f0f0; padding:15px; border-radius:15px; background: #fff;">
-                    <small style="color:#aaa; font-weight:bold; font-size:10px; text-transform:uppercase;">📏 Taglia</small><br>
-                    <b style="font-size:16px;">80x80x68 cm</b>
+            <div id="tab-info" class="tab-content active">
+                <p style="font-size:14px; color:#444; line-height:1.4; text-align:center;">La poltrona sacco non si limita ad accogliere il corpo: lo segue, lo avvolge e ridefinisce il modo stesso di abitare lo spazio.</p>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px;">
+                    <div style="border:1px solid #eee; padding:10px; border-radius:12px;"><small>⚖️ Peso</small><br><b>10 kg</b></div>
+                    <div style="border:1px solid #eee; padding:10px; border-radius:12px;"><small>📏 Taglia</small><br><b>80x80x68 cm</b></div>
                 </div>
             </div>
+
+            <div id="tab-stato" class="tab-content">
+                <div class="stat-row"><span class="stat-label">Comfort</span><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:92%"></div></div><span>92</span></div>
+                <div class="stat-row"><span class="stat-label">Flessibilità</span><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:88%"></div></div><span>88</span></div>
+                <div class="stat-row"><span class="stat-label">Iconicità</span><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:97%"></div></div><span>97</span></div>
+                <p style="font-size:12px; color:#666; margin-top:15px;">Icona del design anni '60, rappresenta comfort e libertà.</p>
+            </div>
         </div>
-        </div>
+    </div>
 
     <script>
         function closeAppStore() { document.getElementById('modal-appstore').style.display = 'none'; }
-        function goToArchive() { document.getElementById('modal-capture').style.display = 'none'; changeScreen('screen-archive-list'); }
+        function showCaptureSuccess() { document.getElementById('modal-success').style.display = 'flex'; }
+        function goToArchive() { document.getElementById('modal-success').style.display = 'none'; changeScreen('screen-archive'); }
+        
         function changeScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('tab-' + tabId).classList.add('active');
         }
     </script>
 </body>
