@@ -3,178 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Design Hunt</title>
+    <title>Design Hunt AR</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-    
     <style>
-        :root { 
-            --primary-red: #a51d16; 
-            --ios-gray-light: #C7C7CC;
-            --ios-blue: #007AFF;
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #ffffff; }
+        model-viewer { width: 100%; height: 100%; background-color: #ffffff; }
+        
+        /* Contenitore per i pulsanti in basso */
+        .button-container {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Spazio tra i due bottoni */
+            width: 80%;
+            max-width: 300px;
+            z-index: 999;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { margin: 0; padding: 0; font-family: -apple-system, system-ui, sans-serif; height: 100%; background: white; overflow: hidden; }
+        /* Stile comune per entrambi i pulsanti */
+        .btn {
+            padding: 15px 20px;
+            border-radius: 30px;
+            border: none;
+            font-family: -apple-system, system-ui, sans-serif;
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            cursor: pointer;
+            text-transform: uppercase;
+        }
 
-        /* OVERLAY E ALERT */
-        .ios-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 30000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
-        .ios-alert { width: 270px; background: rgba(255,255,255,0.9); border-radius: 14px; text-align: center; overflow: hidden; animation: zoom 0.2s ease-out; }
-        .alert-body { padding: 20px; font-size: 14px; color: black; line-height: 1.4; }
-        .alert-footer { display: flex; border-top: 0.5px solid #bbb; }
-        .alert-btn { flex: 1; padding: 12px; border: none; background: transparent; color: var(--ios-blue); font-size: 17px; cursor: pointer; }
-        @keyframes zoom { from { transform: scale(1.1); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        /* Bottone AR (Rosso) */
+        .ar-button {
+            background-color: #a51d16;
+            color: white;
+        }
 
-        /* SCHERMATE */
-        .screen { display: none; height: 100vh; width: 100vw; position: absolute; top: 0; left: 0; flex-direction: column; }
-        .active { display: flex; }
-
-        /* 1. SPLASH SCREEN (INIZIO VIDEO) */
-        #screen-splash { background: white; justify-content: center; align-items: center; text-align: center; }
-        .splash-logo { width: 120px; margin-bottom: 20px; }
-
-        /* 2. LOGIN (FOTO 1) */
-        #screen-login { background: var(--primary-red); color: white; padding: 40px 30px; justify-content: center; align-items: center; }
-        .login-box { width: 100%; max-width: 320px; text-align: center; }
-        .input-group { background: rgba(255,255,255,0.2); border-radius: 12px; margin-bottom: 12px; padding: 16px; display: flex; align-items: center; }
-        .input-group input { background: transparent; border: none; color: white; flex: 1; outline: none; font-size: 16px; }
-        .btn-prossimo { background: black; color: white; width: 100%; border-radius: 50px; padding: 18px; font-size: 18px; font-weight: 600; border: none; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px; }
-
-        /* 3. ARCHIVIO GRIGLIA (FOTO 2) */
-        .archive-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; overflow-y: auto; flex: 1; margin-top: 60px; padding-bottom: 100px; }
-        .grid-card { background: white; border-radius: 15px; padding: 15px; text-align: center; border: 0.5px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .grid-card img { width: 100%; height: 80px; object-fit: contain; }
-        .grid-card span { color: var(--primary-red); font-size: 9px; font-weight: 800; display: block; margin-top: 8px; }
-
-        /* 4. DETTAGLIO (FOTO 3 E FINALE VIDEO) */
-        .detail-header-red { position: absolute; top: 0; width: 100%; height: 160px; background: linear-gradient(180deg, var(--primary-red) 0%, rgba(165,29,22,0.8) 100%); }
-        .detail-card { margin-top: 110px; background: white; border-radius: 40px 40px 0 0; flex: 1; z-index: 5; padding: 0 25px; position: relative; }
-        .product-img-large { width: 180px; margin: -90px auto 10px; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.15)); }
-        
-        /* TAB INTERNE STATO/INFO */
-        .sub-tabs { display: flex; border-bottom: 1px solid #eee; margin-bottom: 20px; }
-        .sub-tab { flex: 1; text-align: center; padding: 12px; color: #aaa; font-size: 14px; font-weight: 600; cursor: pointer; }
-        .sub-tab.active { color: black; border-bottom: 3px solid var(--primary-red); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        /* BARRE STATO (FOTO 4) */
-        .stat-row { display: flex; align-items: center; margin-bottom: 8px; font-size: 13px; }
-        .stat-label { width: 80px; color: #666; }
-        .stat-bar-bg { flex: 1; height: 6px; background: #eee; border-radius: 3px; margin: 0 10px; position: relative; }
-        .stat-bar-fill { height: 100%; background: black; border-radius: 3px; }
-
-        /* TAB BAR INFERIORE */
-        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 85px; background: #F9F9F9; display: flex; justify-content: space-around; align-items: center; border-top: 0.5px solid #ddd; padding-bottom: 25px; }
-        .tab-item svg { width: 28px; height: 28px; fill: none; stroke: var(--ios-gray-light); stroke-width: 1.5; }
-        .tab-item.active-tab svg { stroke: var(--primary-red); fill: var(--primary-red); }
+        /* Bottone Torna all'App (Nero) */
+        .back-button {
+            background-color: #000000;
+            color: white;
+        }
     </style>
 </head>
 <body>
 
-    <div id="modal-appstore" class="ios-overlay" style="display: flex;">
-        <div class="ios-alert">
-            <div class="alert-body"><b>Scarica l'app</b><br><br>Scarica l'app da App Store o se già la possiedi accedi.</div>
-            <div class="alert-footer">
-                <button class="alert-btn" onclick="alert('Redirect...')">App Store</button>
-                <button class="alert-btn" style="font-weight:600;" onclick="closeAppStore()">Accedi</button>
-            </div>
+    <model-viewer 
+        id="viewer"
+        src="poltrona_sacco.glb" 
+        ios-src="poltrona_sacco.usdz"
+        ar 
+        ar-modes="webxr quick-look" 
+        camera-controls 
+        ar-placement="floor"
+        touch-action="none">
+
+        <div class="button-container">
+            <button class="btn ar-button" slot="ar-button">
+                AVVIA SCANSIONE AR
+            </button>
+
+            <a href="https://www.figma.com/proto/9CkrlHtxnngcq6F3SC7cq6/Untitled?node-id=1-21&p=f&viewport=357%2C113%2C0.21&t=lRlajwYAnK5oAMy9-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1" class="btn back-button">
+                TORNA ALL'APP
+            </a>
         </div>
-    </div>
 
-    <div id="modal-success" class="ios-overlay">
-        <div class="ios-alert">
-            <div class="alert-body"><b>Congratulazioni!</b><br><br>Hai catturato la poltrona sacco!<br>La troverai nel tuo archivio.</div>
-            <div class="alert-footer">
-                <button class="alert-btn" style="width:100%; font-weight:600;" onclick="goToArchive()">OK</button>
-            </div>
-        </div>
-    </div>
+    </model-viewer>
 
-    <div id="screen-splash" class="screen active">
-        <img src="logo.png" class="splash-logo">
-        <h2 style="font-weight: 800; letter-spacing: -1px;">Design Hunt</h2>
-        <button onclick="changeScreen('screen-login')" style="background: var(--primary-red); color:white; border:none; padding:12px 40px; border-radius:20px; margin-top:40px; font-weight:bold;">Inizia</button>
-    </div>
-
-    <div id="screen-login" class="screen">
-        <div class="login-box">
-            <img src="logo.png" style="width: 60px; filter: brightness(0) invert(1); margin-bottom: 10px;">
-            <h1 style="margin:0;">Bentornato</h1>
-            <p style="opacity:0.8; margin-bottom:30px;">accedi al tuo account</p>
-            <div class="input-group"><input type="email" placeholder="eleonora.rossi@exemole.com"> ✉️</div>
-            <div class="input-group"><input type="password" placeholder="••••••••••••••"> 🔒</div>
-            <button class="btn-prossimo" onclick="changeScreen('screen-capture')">Prossimo ›</button>
-        </div>
-    </div>
-
-    <div id="screen-capture" class="screen">
-        <model-viewer id="viewer" src="poltrona_sacco.glb" ar ar-modes="webxr" camera-controls style="width:100%; height:100%;">
-            <button slot="ar-button" style="position:absolute; bottom:120px; left:50%; transform:translateX(-50%); background:var(--primary-red); color:white; border:none; padding:15px 30px; border-radius:30px; font-weight:bold;">AVVIA SCANSIONE</button>
-        </model-viewer>
-        <button onclick="showCaptureSuccess()" style="position:absolute; top:50px; right:20px; background:white; width:40px; height:40px; border-radius:50%; border:none; font-weight:bold;">X</button>
-    </div>
-
-    <div id="screen-archive" class="screen">
-        <h2 style="text-align:center; margin-top:60px;">IL TUO ARCHIVIO</h2>
-        <div class="archive-grid">
-            <div class="grid-card" onclick="changeScreen('screen-detail')">
-                <img src="sacco.png">
-                <span>CATTURATO</span>
-            </div>
-            <div class="grid-card" style="opacity:0.3;"><img src="sacco.png"><span>CATTURATO</span></div>
-        </div>
-        <nav class="tab-bar">
-            <div class="tab-item" onclick="changeScreen('screen-capture')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
-            <div class="tab-item active-tab"><svg viewBox="0 0 24 24"><path d="M22 19V9H12l-2-2H2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2z"/></svg></div>
-            <div class="tab-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg></div>
-        </nav>
-    </div>
-
-    <div id="screen-detail" class="screen">
-        <div class="detail-header-red"></div>
-        <div class="detail-card">
-            <img src="sacco.png" class="product-img-large">
-            <h3 style="text-align:center; margin:10px 0 20px;">POLTRONA SACCO</h3>
-            
-            <div class="sub-tabs">
-                <div class="sub-tab" onclick="switchTab('3d')">3D</div>
-                <div class="sub-tab active" onclick="switchTab('info')">Info</div>
-                <div class="sub-tab" onclick="switchTab('stato')">Stato</div>
-            </div>
-
-            <div id="tab-info" class="tab-content active">
-                <p style="font-size:14px; color:#444; line-height:1.4; text-align:center;">La poltrona sacco non si limita ad accogliere il corpo: lo segue, lo avvolge e ridefinisce il modo stesso di abitare lo spazio.</p>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px;">
-                    <div style="border:1px solid #eee; padding:10px; border-radius:12px;"><small>⚖️ Peso</small><br><b>10 kg</b></div>
-                    <div style="border:1px solid #eee; padding:10px; border-radius:12px;"><small>📏 Taglia</small><br><b>80x80x68 cm</b></div>
-                </div>
-            </div>
-
-            <div id="tab-stato" class="tab-content">
-                <div class="stat-row"><span class="stat-label">Comfort</span><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:92%"></div></div><span>92</span></div>
-                <div class="stat-row"><span class="stat-label">Flessibilità</span><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:88%"></div></div><span>88</span></div>
-                <div class="stat-row"><span class="stat-label">Iconicità</span><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:97%"></div></div><span>97</span></div>
-                <p style="font-size:12px; color:#666; margin-top:15px;">Icona del design anni '60, rappresenta comfort e libertà.</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function closeAppStore() { document.getElementById('modal-appstore').style.display = 'none'; }
-        function showCaptureSuccess() { document.getElementById('modal-success').style.display = 'flex'; }
-        function goToArchive() { document.getElementById('modal-success').style.display = 'none'; changeScreen('screen-archive'); }
-        
-        function changeScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            document.getElementById('tab-' + tabId).classList.add('active');
-        }
-    </script>
 </body>
 </html>
